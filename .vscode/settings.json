@@ -1,0 +1,7 @@
+{
+  "eslint.workingDirectories": [
+    "./server",
+    "./client"
+  ],
+  "javascript.suggestionActions.enabled": false
+}
