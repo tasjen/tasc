@@ -1,3 +1,5 @@
+// import { UserJson } from './src/types';
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -8,3 +10,11 @@ declare global {
     }
   }
 }
+
+// declare global {
+//   namespace Express {
+//       interface Request {
+//           user?: UserJson
+//       }
+//   }
+// }
