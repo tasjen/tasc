@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import User, { UserDocument } from '../models/user_model';
+import User from '../models/user_model';
 import { parseUser } from '../utils/validator';
 
 const getAllUsers = async (_req: Request, res: Response): Promise<void> => {
@@ -16,8 +16,9 @@ const getAllUsers = async (_req: Request, res: Response): Promise<void> => {
 };
 
 const addUser = async (req: Request, res: Response): Promise<void> => {
-  const newUser: UserDocument = new User(parseUser(req.body));
-  const savedUser = await newUser.save();
+  const newUser = parseUser(req.body);
+  const docUser = new User(newUser);
+  const savedUser = await docUser.save();
 
   res.status(201).json(savedUser);
 };

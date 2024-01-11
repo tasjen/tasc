@@ -17,10 +17,9 @@ const getAllProjects = async (_req: Request, res: Response): Promise<void> => {
 };
 
 const addProject = async (req: Request, res: Response): Promise<void> => {
-  const newProject = new Project(
-    await parseProject(req.body, req.user as string)
-  );
-  const savedProject = await newProject.save();
+  const newProject = await parseProject(req.body, req.user as string);
+  const docProject = new Project(newProject);
+  const savedProject = await docProject.save();
 
   const userToUpdate = await User.findById(req.user);
   if (userToUpdate === null) {

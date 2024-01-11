@@ -14,8 +14,9 @@ const getAllTasks = async (_req: Request, res: Response): Promise<void> => {
 };
 
 const addTask = async (req: Request, res: Response): Promise<void> => {
-  const newTask = new Task(await parseTask(req.body, req.user as string));
-  const savedTask = await newTask.save();
+  const newTask = await parseTask(req.body, req.user as string);
+  const docTask = new Task(newTask);
+  const savedTask = await docTask.save();
 
   const projectToUpdate = await Project.findById(req.body.project);
   if (projectToUpdate !== null) {
