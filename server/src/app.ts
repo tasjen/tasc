@@ -22,7 +22,7 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
-app.use(logger);
+app.use(logger());
 
 app.get('/', (_req, res) => {
   res.end('/');
