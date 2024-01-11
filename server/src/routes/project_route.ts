@@ -1,18 +1,15 @@
 import { Router, RequestHandler } from 'express';
-import projectService from '../services/project_service';
-import { userExtractor } from '../middleware';
+import projectController from '../controllers/project_controller';
+import { userExtractor } from '../utils/middleware';
+
 const projectRouter = Router();
 
-projectRouter.get('/', (async (_req, res) => {
-  res.json(await projectService.getProjects());
+projectRouter.get('/', (async (req, res) => {
+  await projectController.getAllProjects(req, res);
 }) as RequestHandler);
 
 projectRouter.post('/', userExtractor, (async (req, res) => {
-  const savedProject = await projectService.addProject(
-    req.body,
-    req.user as string
-  );
-  res.status(201).json(savedProject);
+  await projectController.addProject(req, res);
 }) as RequestHandler);
 
 export default projectRouter;

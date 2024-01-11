@@ -2,10 +2,10 @@ import 'express-async-errors';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { MONGO_URI } from './config';
-import userRouter from './routes/users_route';
-import taskRouter from './routes/tasks_route';
-import { logger, unknownEndpoint, errorHandler } from './middleware';
+import { MONGO_URI } from './utils/config';
+import userRouter from './routes/user_route';
+import taskRouter from './routes/task_route';
+import { logger, unknownEndpoint, errorHandler } from './utils/middleware';
 import loginRouter from './routes/login_route';
 import projectRouter from './routes/project_route';
 

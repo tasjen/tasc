@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-import { NewUser } from '../types';
+import { NewUser } from '../utils/types';
 import bcrypt from 'bcrypt';
 
 export interface UserDocument extends Omit<NewUser, 'projects'>, mongoose.Document {

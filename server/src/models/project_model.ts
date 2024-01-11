@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { NewProject } from '../types';
+import { NewProject } from '../utils/types';
 
 export interface ProjectDocument
   extends Omit<NewProject, 'tasks'>,

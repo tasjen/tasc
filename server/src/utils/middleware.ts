@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import morgan from 'morgan';
 import jwt from 'jsonwebtoken';
-import User from './models/user_model';
+import User from '../models/user_model';
 import { SECRET } from './config';
 import { JwtFormat } from './types';
 

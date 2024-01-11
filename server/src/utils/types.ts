@@ -25,19 +25,21 @@ export type TaskJson = NewTask & Id;
 export type NewProject = {
   name: string;
   user: string;
-  tasks: [];
+  tasks: string[];
 };
 
-export type ProjectJson = Omit<NewProject, 'tasks'> & Id & {
-  tasks: NewTask[];
-};
+export type ProjectJson = Omit<NewProject, 'tasks'> &
+  Id & {
+    tasks: TaskJson[];
+  };
 
 export type NewUser = {
   username: string;
   password: string;
-  projects: [];
+  projects: string[];
 };
 
-export type UserJson = Omit<NewUser, 'password' | 'projects'> & Id & {
-  projects: NewProject[]
-};
+export type UserJson = Omit<NewUser, 'password' | 'projects'> &
+  Id & {
+    projects: ProjectJson[];
+  };
