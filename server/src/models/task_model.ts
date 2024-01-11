@@ -10,10 +10,12 @@ const taskSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    trim: true,
   },
   description: {
     type: String,
     required: true,
+    trim: true,
   },
   due_date: {
     type: Date,
