@@ -20,7 +20,7 @@ export type NewTask = {
   project: string;
 };
 
-export type TaskJson = NewTask & Id;
+export type TaskJson = Omit<NewTask, 'due_date'> & { due_date: string } & Id;
 
 export type NewProject = {
   name: string;

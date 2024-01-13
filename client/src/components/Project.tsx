@@ -10,6 +10,7 @@ const Project = ({ project }: Props) => {
       <p className="project-name">{project.name}</p>
       <div>
         <p className="edit button">📝</p>
+        {project.name !== 'Default' && <p className="remove button">❌</p>}
       </div>
     </li>
   );

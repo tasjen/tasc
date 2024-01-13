@@ -15,6 +15,7 @@ import projectService from './services/project';
 import TaskForm from './components/TaskForm';
 import taskService from './services/task';
 import { isAxiosError } from 'axios';
+import Task from './components/Task';
 
 const App = () => {
   const [userData, setUserData] = useState<UserState>(initialUserState);
@@ -139,9 +140,7 @@ const App = () => {
           <p id="tab-name">{workingProject.name}</p>
           <ul id="task-list">
             {workingProject!.tasks.map((t) => (
-              <li className="task" key={t.id}>
-                {t.name}
-              </li>
+              <Task key={t.id} task={t} />
             ))}
           </ul>
           <Togglable buttonLabel={'Add task'} ref={taskFormRef}>
