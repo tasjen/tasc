@@ -41,9 +41,8 @@ const addProject = async (req: Request, res: Response): Promise<void> => {
 const deleteProject = async (req: Request, res: Response): Promise<void> => {
   const project = await Project.findById(req.params.id);
   if (project !== null && project.toJSON().user.toString() === req.user) {
-    for (const taskId of project.tasks) {
-      void Task.findByIdAndDelete(taskId);
-    }
+    // project.tasks.forEach(t => await Task.findByIdAndDelete(t));
+    void Promise.all([...project.tasks.map(t => Task.findByIdAndDelete(t))]);
     void project.deleteOne();
   }
   res.status(201).end();
