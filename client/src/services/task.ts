@@ -1,18 +1,16 @@
 import axios from 'axios';
 import { getAuthHeader, getToken } from './util';
-import { ProjectState } from '../types';
+import { NewTask } from '../types';
 
-const baseUrl = '/api/projects';
+const baseUrl = '/api/tasks';
 
-const create = async (projectObject: {
-  name: string;
-}): Promise<ProjectState> => {
+const create = async (taskObject: NewTask) => {
   const res = await axios.post(
     baseUrl,
-    projectObject,
+    taskObject,
     getAuthHeader(getToken())
   );
-  delete res.data.user;
+  delete res.data.project;
   return res.data;
 };
 

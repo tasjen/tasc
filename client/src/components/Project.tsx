@@ -1,7 +1,7 @@
-import { ProjectJson } from '../types';
+import { ProjectState } from '../types';
 
 type Props = {
-  project: ProjectJson;
+  project: ProjectState;
 };
 
 const Project = ({ project }: Props) => {
