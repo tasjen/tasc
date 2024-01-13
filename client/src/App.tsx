@@ -129,7 +129,12 @@ const App = () => {
           <p id="project-header">Projects</p>
           <ul id="project-list">
             {userData.projects.map((p) => (
-              <Project key={p.id} project={p} />
+              <Project
+                key={p.id}
+                project={p}
+                handleProjectSwitch={setWorkingProject}
+                workingProject={workingProject}
+              />
             ))}
           </ul>
           <Togglable buttonLabel={'Add project'} ref={projectFormRef}>
