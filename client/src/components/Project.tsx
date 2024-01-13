@@ -16,7 +16,7 @@ const Project = ({
   return (
     <li
       key={project.id}
-      className={`project ${project === workingProject ? 'on-page' : ''}`}
+      className={`project ${project.id === workingProject.id ? 'on-page' : ''}`}
       onClick={() => handleProjectSwitch(project)}
     >
       <p className="project-name">{project.name}</p>
