@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import userService from './services/user';
 import {
   NewTask,
@@ -14,22 +14,27 @@ import ProjectForm from './components/ProjectForm';
 import projectService from './services/project';
 import TaskForm from './components/TaskForm';
 import taskService from './services/task';
-import user from './services/user';
+import { isAxiosError } from 'axios';
 
 const App = () => {
   const [userData, setUserData] = useState<UserState>(initialUserState);
   const [workingProject, setWorkingProject] =
     useState<ProjectState>(initialProjectState);
 
+  const projectFormRef = useRef();
+  const taskFormRef = useRef();
+
   const setData = async () => {
     try {
       const userData = await userService.getUserData();
       setUserData(userData);
       setWorkingProject(userData.projects.find((p) => p.name === 'Default')!);
-    } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const errorMessage = (err as any).response.data.error;
-      console.log(errorMessage);
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        console.log(err.response.data.error);
+      } else if (err instanceof Error) {
+        console.log(err.message);
+      }
     }
   };
 
@@ -50,28 +55,39 @@ const App = () => {
         ...userData,
         projects: [...userData.projects, newProject],
       });
-      // projectFormRef.current.toggleVisible()
-    } catch (err) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const errorMessage = (err as any).response.data.error;
-      console.log(errorMessage);
+      (projectFormRef as any).current.toggleVisible();
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        console.log(err.response.data.error);
+      } else if (err instanceof Error) {
+        console.log(err.message);
+      }
     }
   };
 
   const addTask = async (taskObject: NewTask) => {
     try {
       const newTask = await taskService.create(taskObject);
+      setWorkingProject({
+        ...workingProject,
+        tasks: [...workingProject.tasks, newTask],
+      });
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
           p !== workingProject ? p : { ...p, tasks: [...p.tasks, newTask] }
         ),
       });
-      // taskFormRef.current.toggleVisible()
-    } catch (err) {
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const errorMessage = (err as any).response.data.error;
-      console.log(errorMessage);
+      (taskFormRef as any).current.toggleVisible();
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        console.log(err.response.data.error);
+      } else if (err instanceof Error) {
+        console.log(err.message);
+      }
     }
   };
 
@@ -81,11 +97,14 @@ const App = () => {
     }
   }, []);
 
-  if (localStorage.getItem('loggedUser') !== null && user === null) {
+  if (
+    localStorage.getItem('loggedUser') !== null &&
+    userData === initialUserState
+  ) {
     return <></>;
   }
 
-  return user === null ? (
+  return userData === initialUserState ? (
     <LogInForm setData={setData} />
   ) : (
     <>
@@ -112,18 +131,21 @@ const App = () => {
               <Project key={p.id} project={p} />
             ))}
           </ul>
-          <Togglable buttonLabel={'Add project'}>
+          <Togglable buttonLabel={'Add project'} ref={projectFormRef}>
             <ProjectForm addProject={addProject} />
           </Togglable>
         </nav>
         <div id="main-section">
+          <p id="tab-name">{workingProject.name}</p>
           <ul id="task-list">
             {workingProject!.tasks.map((t) => (
-              <li key={t.id}>{t.name}</li>
+              <li className="task" key={t.id}>
+                {t.name}
+              </li>
             ))}
           </ul>
-          <Togglable buttonLabel={'Add task'}>
-            <TaskForm addTask={addTask} />
+          <Togglable buttonLabel={'Add task'} ref={taskFormRef}>
+            <TaskForm project={workingProject.id} addTask={addTask} />
           </Togglable>
         </div>
       </main>
