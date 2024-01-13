@@ -52,6 +52,10 @@ const TaskForm = ({ addTask, project }: Props) => {
           onChange={({ target }) => setDescription(target.value)}
         ></textarea>
       </div>
+      <div id='date-input-container'>
+        <label htmlFor='date-input'>Due date</label>
+        <input type='date' id='date-input'/>
+      </div>
       <div id="priority-input-container">
         <label>Priority</label>
         <div>
@@ -61,6 +65,7 @@ const TaskForm = ({ addTask, project }: Props) => {
             id="low"
             value={1}
             onChange={handlePriority}
+            checked
           />
           <label htmlFor="low">Low</label>{' '}
           <input
