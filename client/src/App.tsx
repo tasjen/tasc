@@ -55,6 +55,7 @@ const App = () => {
         projects: [...userData.projects, newProject],
       });
       projectFormRef.current.toggleVisible();
+      setWorkingProject(newProject);
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -64,12 +65,12 @@ const App = () => {
     }
   };
 
-  const removeProject = async(projectId: string) => {
+  const removeProject = async (projectId: string) => {
     try {
       await projectService.remove(projectId);
       setUserData({
         ...userData,
-        projects: userData.projects.filter(e => e.id !== projectId)
+        projects: userData.projects.filter((e) => e.id !== projectId),
       });
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
@@ -90,7 +91,9 @@ const App = () => {
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
-          p.id !== workingProject.id ? p : { ...p, tasks: [...p.tasks, newTask] }
+          p.id !== workingProject.id
+            ? p
+            : { ...p, tasks: [...p.tasks, newTask] }
         ),
       });
       taskFormRef.current.toggleVisible();
@@ -151,7 +154,10 @@ const App = () => {
           </ul>
           <div id="project-adder">
             <Togglable buttonLabel={'+ Add project'} ref={projectFormRef}>
-              <ProjectForm addProject={addProject} toggleVisible={() => {}} />
+              <ProjectForm
+                addProject={addProject}
+                toggleVisible={() => {}}
+              />
             </Togglable>
           </div>
         </nav>
