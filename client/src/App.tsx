@@ -90,7 +90,7 @@ const App = () => {
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
-          p !== workingProject ? p : { ...p, tasks: [...p.tasks, newTask] }
+          p.id !== workingProject.id ? p : { ...p, tasks: [...p.tasks, newTask] }
         ),
       });
       taskFormRef.current.toggleVisible();
