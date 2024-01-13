@@ -4,9 +4,15 @@ type Props = {
   project: ProjectState;
   handleProjectSwitch: (project: ProjectState) => void;
   workingProject: ProjectState;
+  removeProject: (projectId: string) => void;
 };
 
-const Project = ({ project, handleProjectSwitch, workingProject }: Props) => {
+const Project = ({
+  project,
+  handleProjectSwitch,
+  workingProject,
+  removeProject,
+}: Props) => {
   return (
     <li
       key={project.id}
@@ -16,7 +22,14 @@ const Project = ({ project, handleProjectSwitch, workingProject }: Props) => {
       <p className="project-name">{project.name}</p>
       <div>
         <p className="edit button">📝</p>
-        {project.name !== 'Default' && <p className="remove button">❌</p>}
+        {project.name !== 'Default' && (
+          <p
+            className="remove button"
+            onClick={() => removeProject(project.id)}
+          >
+            ❌
+          </p>
+        )}
       </div>
     </li>
   );

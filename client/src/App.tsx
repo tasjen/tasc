@@ -64,6 +64,22 @@ const App = () => {
     }
   };
 
+  const removeProject = async(projectId: string) => {
+    try {
+      await projectService.remove(projectId);
+      setUserData({
+        ...userData,
+        projects: userData.projects.filter(e => e.id !== projectId)
+      });
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        console.log(err.response.data.error);
+      } else if (err instanceof Error) {
+        console.log(err.message);
+      }
+    }
+  };
+
   const addTask = async (taskObject: NewTask) => {
     try {
       const newTask = await taskService.create(taskObject);
@@ -77,8 +93,6 @@ const App = () => {
           p !== workingProject ? p : { ...p, tasks: [...p.tasks, newTask] }
         ),
       });
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       taskFormRef.current.toggleVisible();
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
@@ -131,6 +145,7 @@ const App = () => {
                 project={p}
                 handleProjectSwitch={setWorkingProject}
                 workingProject={workingProject}
+                removeProject={removeProject}
               />
             ))}
           </ul>
