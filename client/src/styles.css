@@ -4,6 +4,12 @@
   font-family: sans-serif;
 }
 
+#task-form.hide,
+#project-form.hide,
+button.hide {
+  display: none;
+}
+
 * {
   font-size: 1rem;
   margin: 0;
@@ -11,41 +17,28 @@
   list-style: none;
 }
 
-#root {
+body {
   height: 100vh;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 125px 1fr 50px;
   grid-template-areas:
-    'header'
-    'main'
-    'footer';
+    "header"
+    "main"
+    "footer";
   background-color: var(--background-color);
+}
 
-  & > * {
-    border-top: 4px solid black;
-  }
+body > * {
+  border-top: 4px solid black;
 }
 
 header {
-  display: flex;
-  justify-content: space-between;
-  & > p {
-    grid-area: header;
-    font-size: 48px;
-    font-weight: bold;
-    padding-top: 1rem;
-    padding-left: 1rem;
-  }
-  & > #login-form {
-    padding: 12px;
-    div {
-      display: flex;
-      label {
-        margin-right: auto;
-      }
-    }
-  }
+  grid-area: header;
+  font-size: 48px;
+  font-weight: bold;
+  padding-top: 1rem;
+  padding-left: 1rem;
 }
 
 main {
@@ -57,11 +50,11 @@ main {
 nav {
   border-right: 4px solid black;
   padding: 0.5rem;
+}
 
-  li {
-    padding-left: 0.5rem;
-    padding-top: 4px;
-  }
+nav li {
+  padding-left: 0.5rem;
+  padding-top: 4px;
 }
 
 .menu:hover,
@@ -84,7 +77,6 @@ nav {
   display: flex;
   padding-right: 1rem;
 }
-
 .project-name {
   margin-right: auto;
 }
@@ -121,14 +113,14 @@ nav {
   align-items: center;
 }
 
-#project-form {
+#project-form{
   margin-top: 1rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
-    'input input'
-    'submit cancel';
+  "input input"
+  "submit cancel";
   gap: 10px;
 }
 
@@ -163,6 +155,7 @@ nav {
   text-wrap: wrap;
   overflow: hidden;
   word-wrap: break-word;
+  
 }
 
 .description {
@@ -206,10 +199,10 @@ nav {
   grid-template-rows: 1fr 2fr 1fr 1fr;
   gap: 0.5rem;
   grid-template-areas:
-    'task-name task-name'
-    'task-description task-description'
-    'task-due-date task-priority'
-    'form-submit form-cancel';
+    "task-name task-name"
+    "task-description task-description"
+    "task-due-date task-priority"
+    "form-submit form-cancel";
   margin-top: 1rem;
   max-width: 800px;
 }
@@ -262,10 +255,4 @@ footer {
   align-items: center;
   justify-content: center;
   grid-area: footer;
-  a {
-    display: block;
-    img {
-      height: 40px;
-    }
-  }
 }

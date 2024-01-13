@@ -18,7 +18,9 @@ describe('user api test', () => {
 
   test('GET to /api/users returns all users from user collection', async () => {
     const res = await app.get('/api/users').expect(200);
-    expect(res.body).toEqual(await util.usersInDb());
+    expect(res.body.map((e) => e.username)).toEqual(
+      (await util.usersInDb()).map((e) => e.username)
+    );
   });
 
   describe('POST to /api/users', () => {

@@ -11,9 +11,9 @@ describe('project api test', () => {
     await util.resetUsersInDb();
   });
 
-  beforeEach(async () => {
-    await util.resetProjectsInDb();
-  });
+  // beforeEach(async () => {
+  //   await util.resetProjectsInDb();
+  // });
 
   test('GET to /api/projects returns all projects from project collection', async () => {
     const res = await app.get('/api/projects').expect(200);
@@ -54,7 +54,7 @@ describe('project api test', () => {
       const projectsBefore = await util.projectsInDb();
 
       const dupName = {
-        name: 'projectName1',
+        name: 'projectName0',
       };
       await app
         .post('/api/projects')

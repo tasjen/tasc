@@ -29,7 +29,12 @@ const addProject = async (req: Request, res: Response): Promise<void> => {
   userToUpdate.projects = [...userToUpdate.projects, savedProject._id];
   await userToUpdate.save();
 
-  res.status(201).json(savedProject);
+  res.status(201).json(
+    await savedProject.populate({
+      path: 'tasks',
+      select: ['name', 'description', 'due_date', 'priority'],
+    })
+  );
 };
 
 export default {

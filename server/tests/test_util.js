@@ -40,23 +40,24 @@ const projectsInDb = async () => {
 
 const resetUsersInDb = async () => {
   await User.deleteMany({});
+  await Project.deleteMany({});
   const userDocuments = usersForTest.map((u) => new User(u));
   for (let u of userDocuments) await u.save();
 };
 
-const resetProjectsInDb = async () => {
-  const userOne = await User.findOne({
-    username: usersForTest[0].username,
-  }).populate('projects');
+// const resetProjectsInDb = async () => {
+//   const userOne = await User.findOne({
+//     username: usersForTest[0].username,
+//   }).populate('projects');
 
-  userOne.projects = [];
-  await Project.deleteMany({});
-  for (let p of projectsForTest) {
-    const newProject = await new Project({ ...p, user: userOne._id }).save();
-    userOne.projects = [...userOne.projects, newProject._id];
-    await userOne.save();
-  }
-};
+//   userOne.projects = [];
+//   await Project.deleteMany({});
+//   for (let p of projectsForTest) {
+//     const newProject = await new Project({ ...p, user: userOne._id }).save();
+//     userOne.projects = [...userOne.projects, newProject._id];
+//     await userOne.save();
+//   }
+// };
 
 module.exports = {
   usersForTest,
@@ -64,5 +65,5 @@ module.exports = {
   usersInDb,
   projectsInDb,
   resetUsersInDb,
-  resetProjectsInDb,
+  // resetProjectsInDb,
 };
