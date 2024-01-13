@@ -9,7 +9,7 @@ type Props = {
 const TaskForm = ({ addTask, project }: Props) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [due_date, setDueDate] = useState(new Date());
+  const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState(1);
 
   const createTask = async (event: React.SyntheticEvent) => {
@@ -17,18 +17,22 @@ const TaskForm = ({ addTask, project }: Props) => {
     await addTask({
       name,
       description,
-      due_date,
+      due_date: new Date(dueDate),
       priority,
       project,
     });
     setName('');
     setDescription('');
-    setDueDate(new Date());
+    setDueDate('');
     setPriority(1);
   };
 
   const handlePriority = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPriority(+event.target.value);
+  };
+
+  const handleDueDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDueDate(event.target.value);
   };
 
   return (
@@ -52,35 +56,42 @@ const TaskForm = ({ addTask, project }: Props) => {
           onChange={({ target }) => setDescription(target.value)}
         ></textarea>
       </div>
-      <div id='date-input-container'>
-        <label htmlFor='date-input'>Due date</label>
-        <input type='date' id='date-input'/>
+      <div id="date-input-container">
+        <label htmlFor="date-input">Due date</label>
+        <input
+          type="date"
+          id="date-input"
+          value={dueDate}
+          onChange={handleDueDate}
+        />
       </div>
       <div id="priority-input-container">
         <label>Priority</label>
         <div>
           <input
             type="radio"
-            name="priority"
             id="low"
-            value={1}
+            name="priority"
+            value="1"
+            checked={priority === 1}
             onChange={handlePriority}
-            checked
           />
           <label htmlFor="low">Low</label>{' '}
           <input
             type="radio"
-            name="priority"
             id="medium"
-            value={2}
+            name="priority"
+            value="2"
+            checked={priority === 2}
             onChange={handlePriority}
           />
           <label htmlFor="medium">Medium</label>{' '}
           <input
             type="radio"
-            name="priority"
             id="high"
-            value={3}
+            name="priority"
+            value="3"
+            checked={priority === 3}
             onChange={handlePriority}
           />
           <label htmlFor="high">High</label>
