@@ -4,9 +4,10 @@ import { NewTask } from '../types';
 type Props = {
   addTask: (taskObject: NewTask) => Promise<void>;
   project: string;
+  toggleVisible: () => void;
 };
 
-const TaskForm = ({ addTask, project }: Props) => {
+const TaskForm = ({ addTask, project, toggleVisible }: Props) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -98,6 +99,9 @@ const TaskForm = ({ addTask, project }: Props) => {
         </div>
       </div>
       <button type="submit">Add</button>
+      <button type="button" onClick={toggleVisible}>
+        Cancel
+      </button>
     </form>
   );
 };

@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import loginService from '../services/login';
+import { isAxiosError } from 'axios';
 
 type Props = {
-  setData: () => Promise<void>;
+  fetchUserData: () => Promise<void>;
 };
 
-const LogInForm = ({ setData }: Props) => {
+const LogInForm = ({ fetchUserData }: Props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,11 +19,15 @@ const LogInForm = ({ setData }: Props) => {
       });
 
       localStorage.setItem('loggedUser', JSON.stringify(userToken));
-      await setData();
+      await fetchUserData();
       setUsername('');
       setPassword('');
-    } catch (err) {
-      console.log((err as Error).message);
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        console.log(err.response.data.error);
+      } else if (err instanceof Error) {
+        console.log(err.message);
+      }
     }
   };
 

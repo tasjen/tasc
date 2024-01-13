@@ -2,10 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import userService from './services/user';
 import {
   NewTask,
-  ProjectState,
-  UserState,
-  initialProjectState,
-  initialUserState,
+  initProjectState,
+  initToggleRef,
+  initUserState,
 } from './types';
 import LogInForm from './components/LogInForm';
 import Project from './components/Project';
@@ -18,14 +17,13 @@ import { isAxiosError } from 'axios';
 import Task from './components/Task';
 
 const App = () => {
-  const [userData, setUserData] = useState<UserState>(initialUserState);
-  const [workingProject, setWorkingProject] =
-    useState<ProjectState>(initialProjectState);
+  const [userData, setUserData] = useState(initUserState);
+  const [workingProject, setWorkingProject] = useState(initProjectState);
 
-  const projectFormRef = useRef();
-  const taskFormRef = useRef();
+  const projectFormRef = useRef(initToggleRef);
+  const taskFormRef = useRef(initToggleRef);
 
-  const setData = async () => {
+  const fetchUserData = async () => {
     try {
       const userData = await userService.getUserData();
       setUserData(userData);
@@ -39,14 +37,14 @@ const App = () => {
     }
   };
 
-  const clearData = () => {
+  const clearUserData = () => {
     localStorage.clear();
-    setUserData(initialUserState);
-    setWorkingProject(initialProjectState);
+    setUserData(initUserState);
+    setWorkingProject(initProjectState);
   };
 
   const handleLogOut = () => {
-    clearData();
+    clearUserData();
   };
 
   const addProject = async (projectObject: { name: string }) => {
@@ -56,8 +54,7 @@ const App = () => {
         ...userData,
         projects: [...userData.projects, newProject],
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (projectFormRef as any).current.toggleVisible();
+      projectFormRef.current.toggleVisible();
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -82,7 +79,7 @@ const App = () => {
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (taskFormRef as any).current.toggleVisible();
+      taskFormRef.current.toggleVisible();
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -94,19 +91,19 @@ const App = () => {
 
   useEffect(() => {
     if (localStorage.getItem('loggedUser') !== null) {
-      setData();
+      fetchUserData();
     }
   }, []);
 
   if (
     localStorage.getItem('loggedUser') !== null &&
-    userData === initialUserState
+    userData === initUserState
   ) {
     return <></>;
   }
 
-  return userData === initialUserState ? (
-    <LogInForm setData={setData} />
+  return userData === initUserState ? (
+    <LogInForm fetchUserData={fetchUserData} />
   ) : (
     <>
       <header>
@@ -137,9 +134,11 @@ const App = () => {
               />
             ))}
           </ul>
-          <Togglable buttonLabel={'Add project'} ref={projectFormRef}>
-            <ProjectForm addProject={addProject} />
-          </Togglable>
+          <div id="project-adder">
+            <Togglable buttonLabel={'+ Add project'} ref={projectFormRef}>
+              <ProjectForm addProject={addProject} toggleVisible={() => {}} />
+            </Togglable>
+          </div>
         </nav>
         <div id="main-section">
           <p id="tab-name">{workingProject.name}</p>
@@ -148,9 +147,15 @@ const App = () => {
               <Task key={t.id} task={t} />
             ))}
           </ul>
-          <Togglable buttonLabel={'Add task'} ref={taskFormRef}>
-            <TaskForm project={workingProject.id} addTask={addTask} />
-          </Togglable>
+          <div id="task-adder">
+            <Togglable buttonLabel={'+ Add task'} ref={taskFormRef}>
+              <TaskForm
+                project={workingProject.id}
+                addTask={addTask}
+                toggleVisible={() => {}}
+              />
+            </Togglable>
+          </div>
         </div>
       </main>
       <footer>

@@ -2,9 +2,10 @@ import { useState } from 'react';
 
 type Props = {
   addProject: (projectObject: { name: string }) => Promise<void>;
+  toggleVisible: () => void;
 };
 
-const ProjectForm = ({ addProject }: Props) => {
+const ProjectForm = ({ addProject, toggleVisible }: Props) => {
   const [projectName, setProjectName] = useState('');
 
   const createProject = async (event: React.SyntheticEvent) => {
@@ -13,7 +14,7 @@ const ProjectForm = ({ addProject }: Props) => {
     setProjectName('');
   };
   return (
-    <form onSubmit={createProject}>
+    <form id="project-form" onSubmit={createProject}>
       <input
         type="text"
         id="project-name-input"
@@ -24,6 +25,9 @@ const ProjectForm = ({ addProject }: Props) => {
         }}
       />
       <button type="submit">Add</button>
+      <button type="button" onClick={toggleVisible}>
+        Cancel
+      </button>
     </form>
   );
 };

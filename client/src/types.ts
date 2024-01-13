@@ -22,14 +22,18 @@ export type ProjectState = {
   id: string;
 };
 
-export const initialUserState: UserState = {
+export const initUserState: UserState = {
   username: '',
   projects: [],
   id: '',
 };
 
-export const initialProjectState = {
+export const initProjectState: ProjectState = {
   name: '',
   tasks: [],
   id: '',
+};
+
+export const initToggleRef = {
+  toggleVisible: () => {} 
 };
