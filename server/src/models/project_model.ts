@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-base-to-string */
 import mongoose from 'mongoose';
 import { NewProject } from '../utils/types';
+import Task from './task_model';
+import User from './user_model';
 
 export interface ProjectDocument
   extends Omit<NewProject, 'tasks'>,
@@ -26,6 +29,36 @@ const projectSchema = new mongoose.Schema({
     ref: 'User',
   },
 });
+
+projectSchema.pre('save', async function (this: ProjectDocument, next) {
+  if (this.isNew) {
+    const userToUpdate = await User.findById(this.user);
+    if (userToUpdate === null) {
+      return next(new Error('projectSchema: userToUpdate is null'));
+    }
+    userToUpdate.projects = [...userToUpdate.projects, this._id];
+    void userToUpdate.save();
+  }
+
+  next();
+});
+
+projectSchema.pre(
+  'deleteOne',
+  { document: true, query: false },
+  function (this: ProjectDocument, next) {
+    void Promise.all([...this.tasks.map((t) => Task.findByIdAndDelete(t))]);
+    void User.findById(this.user).then((userDoc) => {
+      if (userDoc) {
+        userDoc.projects = userDoc.projects.filter(
+          (p) => p.toString() !== this._id.toString()
+        );
+        void userDoc.save();
+      }
+    });
+    next();
+  }
+);
 
 projectSchema.set('toJSON', {
   transform: (_doc, ret) => {

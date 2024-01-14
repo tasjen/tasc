@@ -4,7 +4,9 @@ import { NewUser } from '../utils/types';
 import bcrypt from 'bcrypt';
 import Project from './project_model';
 
-export interface UserDocument extends Omit<NewUser, 'projects'>, mongoose.Document {
+export interface UserDocument
+  extends Omit<NewUser, 'projects'>,
+    mongoose.Document {
   _id: mongoose.Schema.Types.ObjectId;
   __v: number;
   projects: mongoose.Schema.Types.ObjectId[];
@@ -42,10 +44,10 @@ userSchema.pre('save', async function (this: UserDocument, next) {
   //hash password before saving
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
-  
+
   // Add default project
-  const defaultProject = new Project({name: 'Default', user: this._id});
-  await defaultProject.save();
+  const defaultProject = new Project({ name: 'Default', user: this._id });
+  void defaultProject.save();
   this.projects = [defaultProject._id];
 
   next();
