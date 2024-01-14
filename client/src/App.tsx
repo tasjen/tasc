@@ -72,6 +72,7 @@ const App = () => {
         ...userData,
         projects: userData.projects.filter((e) => e.id !== projectId),
       });
+      setWorkingProject(userData.projects.find(p => p.name === 'Default')!);
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);

@@ -25,7 +25,10 @@ const Project = ({
         {project.name !== 'Default' && (
           <p
             className="remove button"
-            onClick={() => removeProject(project.id)}
+            onClick={(event) => {
+              event.stopPropagation();
+              removeProject(project.id);
+            }}
           >
             ❌
           </p>
