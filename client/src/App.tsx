@@ -126,7 +126,7 @@ const App = () => {
     <>
       <header>
         <p>Todo List</p>
-        <button onClick={handleLogOut}>log out</button>
+        <button id="logout-button" onClick={handleLogOut}>log out</button>
       </header>
       <main>
         <nav>

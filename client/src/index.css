@@ -37,6 +37,13 @@ header {
     padding-top: 1rem;
     padding-left: 1rem;
   }
+  & > #logout-button {
+    height: 50%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-right: 1rem;
+    align-self: center;
+  }
   & > #login-form {
     padding: 12px;
     div {
