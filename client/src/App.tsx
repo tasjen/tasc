@@ -167,7 +167,13 @@ const App = () => {
             {workingProject.tasks.length === 0 ? (
               <p>No tasks here.</p>
             ) : (
-              workingProject!.tasks.map((t) => <Task key={t.id} task={t} />)
+              workingProject.tasks
+                .sort(
+                  (a, b) =>
+                    new Date(a.due_date).getTime() -
+                    new Date(b.due_date).getTime()
+                )
+                .map((t) => <Task key={t.id} task={t} />)
             )}
           </ul>
           <div id="task-adder">
