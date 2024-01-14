@@ -72,7 +72,7 @@ const App = () => {
         ...userData,
         projects: userData.projects.filter((e) => e.id !== projectId),
       });
-      setWorkingProject(userData.projects.find(p => p.name === 'Default')!);
+      setWorkingProject(userData.projects.find((p) => p.name === 'Default')!);
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -126,7 +126,9 @@ const App = () => {
     <>
       <header>
         <p>Todo List</p>
-        <button id="logout-button" onClick={handleLogOut}>log out</button>
+        <button id="logout-button" onClick={handleLogOut}>
+          log out
+        </button>
       </header>
       <main>
         <nav>
@@ -155,19 +157,18 @@ const App = () => {
           </ul>
           <div id="project-adder">
             <Togglable buttonLabel={'+ Add project'} ref={projectFormRef}>
-              <ProjectForm
-                addProject={addProject}
-                toggleVisible={() => {}}
-              />
+              <ProjectForm addProject={addProject} toggleVisible={() => {}} />
             </Togglable>
           </div>
         </nav>
         <div id="main-section">
           <p id="tab-name">{workingProject.name}</p>
           <ul id="task-list">
-            {workingProject!.tasks.map((t) => (
-              <Task key={t.id} task={t} />
-            ))}
+            {workingProject.tasks.length === 0 ? (
+              <p>No tasks here.</p>
+            ) : (
+              workingProject!.tasks.map((t) => <Task key={t.id} task={t} />)
+            )}
           </ul>
           <div id="task-adder">
             <Togglable buttonLabel={'+ Add task'} ref={taskFormRef}>
