@@ -32,12 +32,12 @@ const projectSchema = new mongoose.Schema({
 
 projectSchema.pre('save', function (this: ProjectDocument, next) {
   if (this.isNew) {
-    void Promise.all([
+    void Promise.resolve(
       User.findOneAndUpdate(
         { _id: this.user },
         { $push: { projects: this._id } }
-      ),
-    ]);
+      )
+    );
   }
 
   next();
@@ -48,12 +48,12 @@ projectSchema.pre(
   { document: true, query: false },
   function (this: ProjectDocument, next) {
     void Promise.all([...this.tasks.map((t) => Task.findByIdAndDelete(t))]);
-    void Promise.all([
+    void Promise.resolve(
       User.findOneAndUpdate(
         { _id: this.user },
         { $pull: { projects: this._id } }
-      ),
-    ]);
+      )
+    );
     next();
   }
 );

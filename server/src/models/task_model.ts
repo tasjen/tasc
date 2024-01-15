@@ -36,12 +36,12 @@ const taskSchema = new mongoose.Schema({
 
 taskSchema.pre('save', function (this: TaskDocument, next) {
   if (this.isNew) {
-    void Promise.all([
+    void Promise.resolve(
       Project.findOneAndUpdate(
         { _id: this.project },
         { $push: { tasks: this._id } }
-      ),
-    ]);
+      )
+    );
   }
 
   next();
@@ -51,12 +51,12 @@ taskSchema.pre(
   'deleteOne',
   { document: true, query: false },
   function (this: TaskDocument, next) {
-    void Promise.all([
+    void Promise.resolve(
       Project.findOneAndUpdate(
         { _id: this.project },
         { $pull: { tasks: this._id } }
-      ),
-    ]);
+      )
+    );
     next();
   }
 );

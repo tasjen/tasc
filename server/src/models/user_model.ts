@@ -47,7 +47,7 @@ userSchema.pre('save', async function (this: UserDocument, next) {
 
   // Add default project
   const defaultProject = new Project({ name: 'Default', user: this._id });
-  void defaultProject.save();
+  await defaultProject.save();
   this.projects = [defaultProject._id];
 
   next();
