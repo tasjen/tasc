@@ -1,10 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import userService from './services/user';
-import {
-  NewTask,
-  initProjectState,
-  initUserState,
-} from './types';
+import { NewTask, initProjectState, initUserState } from './types';
 import LogInForm from './components/LogInForm';
 import Project from './components/Project';
 import Togglable from './components/Togglable';
@@ -19,8 +15,8 @@ const App = () => {
   const [userData, setUserData] = useState(initUserState);
   const [workingProject, setWorkingProject] = useState(initProjectState);
 
-  const projectFormRef = useRef({turnOffVisible: () => {}});
-  const taskFormRef = useRef({turnOffVisible: () => {}});
+  const projectFormRef = useRef({ turnOffVisible: () => {} });
+  const taskFormRef = useRef({ turnOffVisible: () => {} });
 
   const fetchUserData = async () => {
     try {
@@ -71,7 +67,7 @@ const App = () => {
         projects: userData.projects.filter((e) => e.id !== projectId),
       });
       setWorkingProject(userData.projects.find((p) => p.name === 'Default')!);
-      hideForms();
+      hideAllForms();
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -121,7 +117,7 @@ const App = () => {
         ),
       });
       setWorkingProject(updatedWorkingProject);
-      hideForms();
+      hideAllForms();
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -131,10 +127,17 @@ const App = () => {
     }
   };
 
-  const hideForms = () => {
+  const hideAllForms = () => {
     taskFormRef.current.turnOffVisible();
     projectFormRef.current.turnOffVisible();
-    console.log(555);
+  };
+
+  const hideProjectForm = () => {
+    projectFormRef.current.turnOffVisible();
+  };
+
+  const hideTaskForm = () => {
+    taskFormRef.current.turnOffVisible();
   };
 
   useEffect(() => {
@@ -182,13 +185,16 @@ const App = () => {
                 handleProjectSwitch={setWorkingProject}
                 workingProject={workingProject}
                 removeProject={removeProject}
-                hideForms={hideForms}
+                hideAllForms={hideAllForms}
               />
             ))}
           </ul>
           <div id="project-adder">
             <Togglable buttonLabel={'+ Add project'} ref={projectFormRef}>
-              <ProjectForm addProject={addProject} turnOffVisible={() => {}} />
+              <ProjectForm
+                addProject={addProject}
+                hideProjectForm={hideProjectForm}
+              />
             </Togglable>
           </div>
         </nav>
@@ -205,7 +211,7 @@ const App = () => {
                     new Date(b.due_date).getTime()
                 )
                 .map((t) => (
-                  <Task key={t.id} task={t} removeTask={removeTask}/>
+                  <Task key={t.id} task={t} removeTask={removeTask} />
                 ))
             )}
           </ul>
@@ -214,7 +220,7 @@ const App = () => {
               <TaskForm
                 project={workingProject.id}
                 addTask={addTask}
-                turnOffVisible={() => {}}
+                hideTaskForm={hideTaskForm}
               />
             </Togglable>
           </div>

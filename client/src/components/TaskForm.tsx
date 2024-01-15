@@ -4,16 +4,16 @@ import { NewTask } from '../types';
 type Props = {
   addTask: (taskObject: NewTask) => Promise<void>;
   project: string;
-  turnOffVisible: () => void;
+  hideTaskForm: () => void;
 };
 
-const TaskForm = ({ addTask, project, turnOffVisible }: Props) => {
+const TaskForm = ({ addTask, project, hideTaskForm }: Props) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState(1);
 
-  const createTask = async (event: React.SyntheticEvent) => {
+  const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     await addTask({
       name,
@@ -22,7 +22,7 @@ const TaskForm = ({ addTask, project, turnOffVisible }: Props) => {
       priority,
       project,
     });
-    turnOffVisible();
+    hideTaskForm();
     setName('');
     setDescription('');
     setDueDate('');
@@ -30,7 +30,7 @@ const TaskForm = ({ addTask, project, turnOffVisible }: Props) => {
   };
 
   const handleCancel = () => {
-    turnOffVisible();
+    hideTaskForm();
     setName('');
     setDescription('');
     setDueDate('');
@@ -46,7 +46,7 @@ const TaskForm = ({ addTask, project, turnOffVisible }: Props) => {
   };
 
   return (
-    <form id="task-form" onSubmit={createTask}>
+    <form id="task-form" onSubmit={handleSubmit}>
       <div id="name-input-container">
         <label htmlFor="name-input">Task name</label>
         <input

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState, forwardRef, useImperativeHandle } from 'react';
 
 type Props = {
@@ -24,16 +23,12 @@ const Togglable = forwardRef((props: Props, ref) => {
     return { turnOffVisible };
   });
 
-  const childWithTurnOffVisible = React.Children.map(props.children, (c) => {
-    return React.cloneElement(c, { turnOffVisible });
-  });
-
   return (
     <>
       <button style={hideWhenVisible} onClick={toggleVisible}>
         {props.buttonLabel}
       </button>
-      <div style={showWhenVisible}>{childWithTurnOffVisible}</div>
+      <div style={showWhenVisible}>{props.children}</div>
     </>
   );
 });

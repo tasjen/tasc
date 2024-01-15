@@ -33,7 +33,3 @@ export const initProjectState: ProjectState = {
   tasks: [],
   id: '',
 };
-
-export const initToggleRef = {
-  toggleVisible: () => {} 
-};
