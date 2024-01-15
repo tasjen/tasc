@@ -13,6 +13,12 @@ const ProjectForm = ({ addProject, toggleVisible }: Props) => {
     await addProject({ name: projectName });
     setProjectName('');
   };
+
+  const handleCancel = () => {
+    toggleVisible();
+    setProjectName('');
+  };
+
   return (
     <form id="project-form" onSubmit={createProject}>
       <input
@@ -26,7 +32,7 @@ const ProjectForm = ({ addProject, toggleVisible }: Props) => {
         required
       />
       <button type="submit">Add</button>
-      <button type="button" onClick={toggleVisible}>
+      <button type="button" onClick={handleCancel}>
         Cancel
       </button>
     </form>

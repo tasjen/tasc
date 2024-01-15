@@ -28,6 +28,14 @@ const TaskForm = ({ addTask, project, toggleVisible }: Props) => {
     setPriority(1);
   };
 
+  const handleCancel = () => {
+    toggleVisible();
+    setName('');
+    setDescription('');
+    setDueDate('');
+    setPriority(1);
+  };
+
   const handlePriority = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPriority(+event.target.value);
   };
@@ -102,7 +110,7 @@ const TaskForm = ({ addTask, project, toggleVisible }: Props) => {
         </div>
       </div>
       <button type="submit">Add</button>
-      <button type="button" onClick={toggleVisible}>
+      <button type="button" onClick={handleCancel}>
         Cancel
       </button>
     </form>
