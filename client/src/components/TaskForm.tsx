@@ -46,6 +46,7 @@ const TaskForm = ({ addTask, project, toggleVisible }: Props) => {
           placeholder="Task name"
           value={name}
           onChange={({ target }) => setName(target.value)}
+          required
         ></input>
       </div>
       <div id="description-input-container">
@@ -64,6 +65,7 @@ const TaskForm = ({ addTask, project, toggleVisible }: Props) => {
           id="date-input"
           value={dueDate}
           onChange={handleDueDate}
+          required
         />
       </div>
       <div id="priority-input-container">
@@ -76,6 +78,7 @@ const TaskForm = ({ addTask, project, toggleVisible }: Props) => {
             value="1"
             checked={priority === 1}
             onChange={handlePriority}
+            required
           />
           <label htmlFor="low">Low</label>{' '}
           <input

@@ -23,6 +23,7 @@ const ProjectForm = ({ addProject, toggleVisible }: Props) => {
         onChange={({ target }) => {
           setProjectName(target.value);
         }}
+        required
       />
       <button type="submit">Add</button>
       <button type="button" onClick={toggleVisible}>
