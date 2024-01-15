@@ -1,6 +1,6 @@
 import Task from '../models/task_model';
 import { Request, Response } from 'express';
-import { parseTask } from '../utils/validator';
+import { parseTask, parseTaskForUpdate } from '../utils/validator';
 import Project from '../models/project_model';
 
 const getAllTasks = async (_req: Request, res: Response): Promise<void> => {
@@ -34,8 +34,22 @@ const deleteTask = async (req: Request, res: Response): Promise<void> => {
   res.status(201).end();
 };
 
+const updateTask = async (req: Request, res: Response): Promise<void> => {
+  const { name, description, due_date, priority, id } =
+    await parseTaskForUpdate(req.body, req.user as string);
+
+  const updatedTask = await Task.findByIdAndUpdate(
+    id,
+    { name, description, due_date, priority },
+    { new: true, runValidators: true, context: 'query' }
+  );
+
+  res.status(201).json(updatedTask);
+};
+
 export default {
   getAllTasks,
   addTask,
   deleteTask,
+  updateTask,
 };

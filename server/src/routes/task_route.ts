@@ -16,4 +16,8 @@ taskRouter.delete('/:id', userExtractor, (async (req, res) => {
   await taskController.deleteTask(req, res);
 }) as RequestHandler);
 
+taskRouter.put('/:id', userExtractor, (async (req, res) => {
+  await taskController.updateTask(req, res);
+}) as RequestHandler);
+
 export default taskRouter;

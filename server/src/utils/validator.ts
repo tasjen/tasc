@@ -1,5 +1,6 @@
 import User from '../models/user_model';
 import Project from '../models/project_model';
+import Task from '../models/task_model';
 import { NewUser, NewProject, NewTask, Priority } from './types';
 import { JwtFormat } from './types';
 
@@ -60,11 +61,13 @@ const isUniqueProjectName = async (
   projectName: string,
   userId: string
 ): Promise<boolean> => {
-  const projectsOfUser = await User.findById(userId).populate('projects');
+  let projectsOfUser = await User.findById(userId).populate('projects');
   if (projectsOfUser === null) {
     throw new Error('user not found');
   }
-  return projectsOfUser.toJSON().projects.every((project) => {
+
+  projectsOfUser = projectsOfUser.toJSON();
+  return projectsOfUser.projects.every((project) => {
     if (!('name' in project)) {
       throw new Error('name property not found in project document');
     }
@@ -127,6 +130,37 @@ export const parseTask = async (
   return newTask;
 };
 
+export const parseTaskForUpdate = async (
+  object: unknown,
+  userId: string
+): Promise<Omit<NewTask, 'project'> & { id: string }> => {
+  if (
+    !object ||
+    typeof object !== 'object' ||
+    !(
+      'name' in object &&
+      'description' in object &&
+      'due_date' in object &&
+      'priority' in object &&
+      'project' in object &&
+      'id' in object
+    ) ||
+    !isString(object.project) ||
+    !isString(object.id) ||
+    !(await isYourProject(object.project, userId))
+  ) {
+    throw new ValError('Incorrect or missing data');
+  }
+  const parsedTask = {
+    name: await parseTaskNameForUpdate(object.name, object.project, object.id),
+    description: parseDescription(object.description),
+    due_date: parseDueDate(object.due_date),
+    priority: parsePriority(object.priority),
+    id: object.id,
+  };
+  return parsedTask;
+};
+
 const isNumber = (param: unknown): param is number => {
   return typeof param === 'number' || param instanceof Number;
 };
@@ -169,6 +203,20 @@ const parseTaskName = async (
   }
 
   if (!(await isUniqueTaskName(name, projectId))) {
+    throw new ValError('task name must be unique');
+  }
+  return name;
+};
+
+const parseTaskNameForUpdate = async (
+  name: unknown,
+  projectId: string,
+  taskId: string
+): Promise<string> => {
+  if (!isString(name) || name.length < 1) {
+    throw new ValError('Incorrect or missing name');
+  }
+  if (!(await isUniqueTaskNameForUpdate(name, projectId, taskId))) {
     throw new ValError('task name must be unique');
   }
   return name;
@@ -222,4 +270,38 @@ const isUniqueTaskName = async (
     }
     return task.name !== taskName;
   });
+};
+
+const isUniqueTaskNameForUpdate = async (
+  taskName: string,
+  projectId: string,
+  taskId: string
+): Promise<boolean> => {
+  const tasksOfProject = await Project.findById(projectId).populate('tasks');
+  const currentTask = await Task.findById(taskId);
+  if (tasksOfProject === null) {
+    throw new ValError('isUniqueTaskNameForUpdate error: project not found');
+  }
+  if (currentTask === null) {
+    throw new ValError('isUniqueTaskNameForUpdate error: task not found');
+  }
+
+  return tasksOfProject
+    .toJSON()
+    .tasks.filter((task) => {
+      if (!('name' in task)) {
+        throw new ValError(
+          'isUniqueTaskName error: `name` is not in task document'
+        );
+      }
+      return task.name !== currentTask.name;
+    })
+    .every((task) => {
+      if (!('name' in task)) {
+        throw new ValError(
+          'isUniqueTaskName error: `name` is not in task document'
+        );
+      }
+      return task.name !== taskName;
+    });
 };
