@@ -16,12 +16,16 @@ const Togglable = forwardRef((props: Props, ref) => {
     setVisible(!visible);
   };
 
+  const turnOffVisible = () => {
+    setVisible(false);
+  };
+
   useImperativeHandle(ref, () => {
-    return { toggleVisible };
+    return { turnOffVisible };
   });
 
-  const childWithToggleVisible = React.Children.map(props.children, (c) => {
-    return React.cloneElement(c, { toggleVisible });
+  const childWithTurnOffVisible = React.Children.map(props.children, (c) => {
+    return React.cloneElement(c, { turnOffVisible });
   });
 
   return (
@@ -29,7 +33,7 @@ const Togglable = forwardRef((props: Props, ref) => {
       <button style={hideWhenVisible} onClick={toggleVisible}>
         {props.buttonLabel}
       </button>
-      <div style={showWhenVisible}>{childWithToggleVisible}</div>
+      <div style={showWhenVisible}>{childWithTurnOffVisible}</div>
     </>
   );
 });

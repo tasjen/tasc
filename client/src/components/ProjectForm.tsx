@@ -2,20 +2,21 @@ import { useState } from 'react';
 
 type Props = {
   addProject: (projectObject: { name: string }) => Promise<void>;
-  toggleVisible: () => void;
+  turnOffVisible: () => void;
 };
 
-const ProjectForm = ({ addProject, toggleVisible }: Props) => {
+const ProjectForm = ({ addProject, turnOffVisible }: Props) => {
   const [projectName, setProjectName] = useState('');
 
   const createProject = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     await addProject({ name: projectName });
+    turnOffVisible();
     setProjectName('');
   };
 
   const handleCancel = () => {
-    toggleVisible();
+    turnOffVisible();
     setProjectName('');
   };
 

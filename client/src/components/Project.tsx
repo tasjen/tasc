@@ -5,6 +5,7 @@ type Props = {
   handleProjectSwitch: (project: ProjectState) => void;
   workingProject: ProjectState;
   removeProject: (projectId: string) => void;
+  hideForms: () => void;
 };
 
 const Project = ({
@@ -12,12 +13,16 @@ const Project = ({
   handleProjectSwitch,
   workingProject,
   removeProject,
+  hideForms,
 }: Props) => {
   return (
     <li
       key={project.id}
       className={`project ${project.id === workingProject.id ? 'on-page' : ''}`}
-      onClick={() => handleProjectSwitch(project)}
+      onClick={() => {
+        handleProjectSwitch(project);
+        hideForms();
+      }}
     >
       <p className="project-name">{project.name}</p>
       <div>
@@ -28,6 +33,7 @@ const Project = ({
             onClick={(event) => {
               event.stopPropagation();
               removeProject(project.id);
+              hideForms();
             }}
           >
             ❌

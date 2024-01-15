@@ -7,10 +7,10 @@ type Props = {
 };
 
 const Task = ({ task, removeTask }: Props) => {
-  const [seeDescription, setSeeDescription] = useState(false);
+  const [showDescription, setShowDescription] = useState(false);
 
   const toggleDescription = () => {
-    setSeeDescription(!seeDescription);
+    setShowDescription(!showDescription);
   };
 
   const toDateFormat = (date: Date): string => {
@@ -30,11 +30,16 @@ const Task = ({ task, removeTask }: Props) => {
         </p>
         <p className="due-date">{toDateFormat(new Date(task.due_date))}</p>
         <p className="edit button">📝</p>
-        <p className="remove button" onClick={() => removeTask(task.id)}>
+        <p
+          className="remove button"
+          onClick={() => {
+            removeTask(task.id);
+          }}
+        >
           ❌
         </p>
       </div>
-      {seeDescription && <p className="task-description">{task.description}</p>}
+      {showDescription && <p className="task-description">{task.description}</p>}
     </li>
   );
 };

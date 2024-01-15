@@ -4,10 +4,10 @@ import { NewTask } from '../types';
 type Props = {
   addTask: (taskObject: NewTask) => Promise<void>;
   project: string;
-  toggleVisible: () => void;
+  turnOffVisible: () => void;
 };
 
-const TaskForm = ({ addTask, project, toggleVisible }: Props) => {
+const TaskForm = ({ addTask, project, turnOffVisible }: Props) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -22,6 +22,7 @@ const TaskForm = ({ addTask, project, toggleVisible }: Props) => {
       priority,
       project,
     });
+    turnOffVisible();
     setName('');
     setDescription('');
     setDueDate('');
@@ -29,7 +30,7 @@ const TaskForm = ({ addTask, project, toggleVisible }: Props) => {
   };
 
   const handleCancel = () => {
-    toggleVisible();
+    turnOffVisible();
     setName('');
     setDescription('');
     setDueDate('');
