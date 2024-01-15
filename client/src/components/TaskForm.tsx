@@ -1,41 +1,68 @@
-import { useState } from 'react';
-import { NewTask } from '../types';
+import { forwardRef, useImperativeHandle, useState } from 'react';
+import { NewTask, TaskJson } from '../types';
+import { format } from 'date-fns';
 
 type Props = {
   addTask: (taskObject: NewTask) => Promise<void>;
   project: string;
+  updateTask: (taskObject: TaskJson) => Promise<void>;
   hideTaskForm: () => void;
+  showTaskForm: () => void;
 };
 
-const TaskForm = ({ addTask, project, hideTaskForm }: Props) => {
+const TaskForm = forwardRef(({ addTask, updateTask, project, hideTaskForm, showTaskForm }: Props, ref) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState(1);
 
-  const handleSubmit = async (event: React.SyntheticEvent) => {
-    event.preventDefault();
-    await addTask({
-      name,
-      description,
-      due_date: new Date(dueDate),
-      priority,
-      project,
-    });
-    hideTaskForm();
-    setName('');
-    setDescription('');
-    setDueDate('');
-    setPriority(1);
+  const [taskId, setTaskId] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const setFormEdit = (taskObject: Omit<TaskJson, 'project'>) => {
+
+    setIsUpdating(true);
+
+    setName(taskObject.name);
+    setDescription(taskObject.description);
+    setDueDate(format(taskObject.due_date, 'yyyy-MM-dd'));
+    setPriority(taskObject.priority);
+    setTaskId(taskObject.id);
+
+    showTaskForm();
   };
 
-  const handleCancel = () => {
+  const handleSubmit = async (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    if (isUpdating) {
+      await updateTask({
+        name,
+        description,
+        due_date: dueDate,
+        priority,
+        project,
+        id: taskId,
+      })
+    } else {
+      await addTask({
+        name,
+        description,
+        due_date: new Date(dueDate),
+        priority,
+        project,
+      });
+    }
+    clearForms()
+  };
+
+  const clearForms = () => {
     hideTaskForm();
     setName('');
     setDescription('');
     setDueDate('');
     setPriority(1);
-  };
+    setIsUpdating(false);
+  }
 
   const handlePriority = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPriority(+event.target.value);
@@ -44,6 +71,10 @@ const TaskForm = ({ addTask, project, hideTaskForm }: Props) => {
   const handleDueDate = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDueDate(event.target.value);
   };
+
+  useImperativeHandle(ref, () => {
+    return { setFormEdit, clearForms };
+  });
 
   return (
     <form id="task-form" onSubmit={handleSubmit}>
@@ -110,12 +141,12 @@ const TaskForm = ({ addTask, project, hideTaskForm }: Props) => {
           <label htmlFor="high">High</label>
         </div>
       </div>
-      <button type="submit">Add</button>
-      <button type="button" onClick={handleCancel}>
+      <button type="submit">{isUpdating ? "Update" : "Add"}</button>
+      <button type="button" onClick={clearForms}>
         Cancel
       </button>
     </form>
   );
-};
+});
 
 export default TaskForm;

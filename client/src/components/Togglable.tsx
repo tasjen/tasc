@@ -15,12 +15,16 @@ const Togglable = forwardRef((props: Props, ref) => {
     setVisible(!visible);
   };
 
+  const turnOnVisible = () => {
+    setVisible(true);
+  };
+
   const turnOffVisible = () => {
     setVisible(false);
   };
 
   useImperativeHandle(ref, () => {
-    return { turnOffVisible };
+    return { turnOnVisible, turnOffVisible };
   });
 
   return (

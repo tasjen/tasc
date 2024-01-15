@@ -4,9 +4,10 @@ import { TaskJson } from '../types';
 type Props = {
   task: Omit<TaskJson, 'project'>;
   removeTask: (taskId: string) => void;
+  setFormEdit: (taskObject: Omit<TaskJson, 'project'>) => void;
 };
 
-const Task = ({ task, removeTask }: Props) => {
+const Task = ({ task, removeTask, setFormEdit }: Props) => {
   const [showDescription, setShowDescription] = useState(false);
 
   const toggleDescription = () => {
@@ -20,6 +21,7 @@ const Task = ({ task, removeTask }: Props) => {
       year: 'numeric',
     });
   };
+
   return (
     <li className="task">
       <div className="task-detail">
@@ -29,7 +31,7 @@ const Task = ({ task, removeTask }: Props) => {
           {'description'}
         </p>
         <p className="due-date">{toDateFormat(new Date(task.due_date))}</p>
-        <p className="edit button">📝</p>
+        <p className="edit button" onClick={() => setFormEdit(task)}>📝</p>
         <p
           className="remove button"
           onClick={() => {

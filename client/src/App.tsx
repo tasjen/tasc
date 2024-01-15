@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import userService from './services/user';
-import { NewTask, initProjectState, initUserState } from './types';
+import { NewTask, TaskJson, initProjectState, initUserState } from './types';
 import LogInForm from './components/LogInForm';
 import Project from './components/Project';
 import Togglable from './components/Togglable';
@@ -15,8 +15,20 @@ const App = () => {
   const [userData, setUserData] = useState(initUserState);
   const [workingProject, setWorkingProject] = useState(initProjectState);
 
-  const projectFormRef = useRef({ turnOffVisible: () => {} });
-  const taskFormRef = useRef({ turnOffVisible: () => {} });
+  const projectFormRef = useRef({
+    turnOffVisible: () => {},
+    turnOnVisible: () => {},
+  });
+  const taskFormRef = useRef({
+    turnOffVisible: () => {},
+    turnOnVisible: () => {},
+  });
+
+  const taskFormEditRef = useRef({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setFormEdit: (_taskObject: Omit<TaskJson, 'project'>) => {},
+    clearForms: () => {}
+  });
 
   const fetchUserData = async () => {
     try {
@@ -127,17 +139,52 @@ const App = () => {
     }
   };
 
+  const updateTask = async (taskObject: TaskJson) => {
+    try {
+      const updatedTask = await taskService.update(taskObject);
+
+      const updatedWorkingProject = {
+        ...workingProject,
+        tasks: workingProject.tasks.map((t) => t.id !== updatedTask.id ? t : updatedTask),
+      };
+
+      setUserData({
+        ...userData,
+        projects: userData.projects.map((p) =>
+          p.id !== workingProject.id ? p : updatedWorkingProject
+        ),
+      });
+      setWorkingProject(updatedWorkingProject);
+      hideAllForms();
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        console.log(err.response.data.error);
+      } else if (err instanceof Error) {
+        console.log(err.message);
+      }
+    }
+  };
+
   const hideAllForms = () => {
     taskFormRef.current.turnOffVisible();
     projectFormRef.current.turnOffVisible();
+    taskFormEditRef.current.clearForms();
   };
 
   const hideProjectForm = () => {
     projectFormRef.current.turnOffVisible();
   };
 
+  const showTaskForm = () => {
+    taskFormRef.current.turnOnVisible();
+  };
+
   const hideTaskForm = () => {
     taskFormRef.current.turnOffVisible();
+  };
+
+  const setFormEdit = (taskObject: Omit<TaskJson, 'project'>) => {
+    taskFormEditRef.current.setFormEdit(taskObject);
   };
 
   useEffect(() => {
@@ -211,16 +258,24 @@ const App = () => {
                     new Date(b.due_date).getTime()
                 )
                 .map((t) => (
-                  <Task key={t.id} task={t} removeTask={removeTask} />
+                  <Task
+                    key={t.id}
+                    task={t}
+                    removeTask={removeTask}
+                    setFormEdit={setFormEdit}
+                  />
                 ))
             )}
           </ul>
           <div id="task-adder">
             <Togglable buttonLabel={'+ Add task'} ref={taskFormRef}>
               <TaskForm
-                project={workingProject.id}
                 addTask={addTask}
+                updateTask={updateTask}
+                project={workingProject.id}
                 hideTaskForm={hideTaskForm}
+                showTaskForm={showTaskForm}
+                ref={taskFormEditRef}
               />
             </Togglable>
           </div>
