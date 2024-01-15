@@ -34,13 +34,14 @@ const taskSchema = new mongoose.Schema({
   },
 });
 
-taskSchema.pre('save', async function (this: TaskDocument, next) {
+taskSchema.pre('save', function (this: TaskDocument, next) {
   if (this.isNew) {
-    const projectToUpdate = await Project.findById(this.project);
-    if (projectToUpdate !== null) {
-      projectToUpdate.tasks = [...projectToUpdate.tasks, this._id];
-      void projectToUpdate.save();
-    }
+    void Promise.all([
+      Project.findOneAndUpdate(
+        { _id: this.project },
+        { $push: { tasks: this._id } }
+      ),
+    ]);
   }
 
   next();
@@ -50,14 +51,12 @@ taskSchema.pre(
   'deleteOne',
   { document: true, query: false },
   function (this: TaskDocument, next) {
-    void Project.findById(this.project).then((projectDoc) => {
-      if (projectDoc) {
-        projectDoc.tasks = projectDoc.tasks.filter(
-          (t) => t.toString() !== this._id.toString()
-        );
-        void projectDoc.save();
-      }
-    });
+    void Promise.all([
+      Project.findOneAndUpdate(
+        { _id: this.project },
+        { $pull: { tasks: this._id } }
+      ),
+    ]);
     next();
   }
 );

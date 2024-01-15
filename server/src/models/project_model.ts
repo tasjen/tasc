@@ -30,13 +30,14 @@ const projectSchema = new mongoose.Schema({
   },
 });
 
-projectSchema.pre('save', async function (this: ProjectDocument, next) {
+projectSchema.pre('save', function (this: ProjectDocument, next) {
   if (this.isNew) {
-    const userToUpdate = await User.findById(this.user);
-    if (userToUpdate !== null) {
-      userToUpdate.projects = [...userToUpdate.projects, this._id];
-      void userToUpdate.save();
-    }
+    void Promise.all([
+      User.findOneAndUpdate(
+        { _id: this.user },
+        { $push: { projects: this._id } }
+      ),
+    ]);
   }
 
   next();
@@ -47,14 +48,12 @@ projectSchema.pre(
   { document: true, query: false },
   function (this: ProjectDocument, next) {
     void Promise.all([...this.tasks.map((t) => Task.findByIdAndDelete(t))]);
-    void User.findById(this.user).then((userDoc) => {
-      if (userDoc) {
-        userDoc.projects = userDoc.projects.filter(
-          (p) => p.toString() !== this._id.toString()
-        );
-        void userDoc.save();
-      }
-    });
+    void Promise.all([
+      User.findOneAndUpdate(
+        { _id: this.user },
+        { $pull: { projects: this._id } }
+      ),
+    ]);
     next();
   }
 );
