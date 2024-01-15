@@ -1,43 +1,74 @@
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 
 type Props = {
   addProject: (projectObject: { name: string }) => Promise<void>;
+  updateProject: (projectObject: { name: string; id: string }) => Promise<void>;
   hideProjectForm: () => void;
+  showProjectForm: () => void;
 };
 
-const ProjectForm = ({ addProject, hideProjectForm }: Props) => {
-  const [projectName, setProjectName] = useState('');
+const ProjectForm = forwardRef(
+  (
+    { addProject, updateProject, showProjectForm, hideProjectForm }: Props,
+    ref
+  ) => {
+    const [projectName, setProjectName] = useState('');
 
-  const handleSubmit = async (event: React.SyntheticEvent) => {
-    event.preventDefault();
-    await addProject({ name: projectName });
-    hideProjectForm();
-    setProjectName('');
-  };
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [projectId, setProjectId] = useState('');
 
-  const handleCancel = () => {
-    hideProjectForm();
-    setProjectName('');
-  };
+    const setProjectFormEdit = (taskObject: { name: string; id: string }) => {
+      setIsUpdating(true);
 
-  return (
-    <form id="project-form" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        id="project-name-input"
-        placeholder="Project name"
-        value={projectName}
-        onChange={({ target }) => {
-          setProjectName(target.value);
-        }}
-        required
-      />
-      <button type="submit">Add</button>
-      <button type="button" onClick={handleCancel}>
-        Cancel
-      </button>
-    </form>
-  );
-};
+      setProjectName(taskObject.name);
+      setProjectId(taskObject.id);
+
+      showProjectForm();
+    };
+
+    const handleSubmit = async (event: React.SyntheticEvent) => {
+      event.preventDefault();
+      if (isUpdating) {
+        await updateProject({
+          name: projectName,
+          id: projectId,
+        });
+      } else {
+        await addProject({ name: projectName });
+      }
+      clearForms();
+    };
+
+    const clearForms = () => {
+      hideProjectForm();
+      setProjectName('');
+      setProjectId('');
+      setIsUpdating(false);
+    };
+
+    useImperativeHandle(ref, () => {
+      return { setProjectFormEdit, clearForms };
+    });
+
+    return (
+      <form id="project-form" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          id="project-name-input"
+          placeholder="Project name"
+          value={projectName}
+          onChange={({ target }) => {
+            setProjectName(target.value);
+          }}
+          required
+        />
+        <button type="submit">{isUpdating ? 'Update' : 'Add'}</button>
+        <button type="button" onClick={clearForms}>
+          Cancel
+        </button>
+      </form>
+    );
+  }
+);
 
 export default ProjectForm;

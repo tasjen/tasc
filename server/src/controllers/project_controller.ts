@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
-// import User from '../models/user_model';
 import Project from '../models/project_model';
-// import Task from '../models/task_model';
-import { parseProject } from '../utils/validator';
+import { parseProject, parseProjectForUpdate } from '../utils/validator';
 
 const getAllProjects = async (_req: Request, res: Response): Promise<void> => {
   const allProjects = await Project.find({})
@@ -38,8 +36,24 @@ const deleteProject = async (req: Request, res: Response): Promise<void> => {
   res.status(201).end();
 };
 
+const updateProject = async (req: Request, res: Response): Promise<void> => {
+  const { name, id } = await parseProjectForUpdate(
+    req.body,
+    req.user as string
+  );
+
+  const updatedProject = await Project.findByIdAndUpdate(
+    id,
+    { name },
+    { new: true, runValidators: true, context: 'query' }
+  );
+
+  res.status(201).json(updatedProject);
+};
+
 export default {
   getAllProjects,
   addProject,
   deleteProject,
+  updateProject,
 };

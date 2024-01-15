@@ -6,6 +6,7 @@ type Props = {
   workingProject: ProjectState;
   removeProject: (projectId: string) => void;
   hideAllForms: () => void;
+  setProjectFormEdit: (projectObject: { name: string; id: string }) => void;
 };
 
 const Project = ({
@@ -14,6 +15,7 @@ const Project = ({
   workingProject,
   removeProject,
   hideAllForms,
+  setProjectFormEdit,
 }: Props) => {
   return (
     <li
@@ -25,9 +27,18 @@ const Project = ({
       }}
     >
       <p className="project-name">{project.name}</p>
-      <div>
-        <p className="edit button">📝</p>
-        {project.name !== 'Default' && (
+      {project.name !== 'Default' && (
+        <div>
+          <p
+            className="edit button"
+            onClick={(event) => {
+              event.stopPropagation();
+              setProjectFormEdit(project);
+              handleProjectSwitch(project);
+            }}
+          >
+            📝
+          </p>
           <p
             className="remove button"
             onClick={(event) => {
@@ -38,8 +49,8 @@ const Project = ({
           >
             ❌
           </p>
-        )}
-      </div>
+        </div>
+      )}
     </li>
   );
 };

@@ -16,4 +16,8 @@ projectRouter.delete('/:id', userExtractor, (async (req, res) => {
   await projectController.deleteProject(req, res);
 }) as RequestHandler);
 
+projectRouter.put('/:id', userExtractor, (async (req, res) => {
+  await projectController.updateProject(req, res);
+}) as RequestHandler);
+
 export default projectRouter;

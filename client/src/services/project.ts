@@ -20,7 +20,18 @@ const remove = (projectId: string) => {
   axios.delete(`${baseUrl}/${projectId}`, getAuthHeader(getToken()));
 };
 
+const update = async (projectObject: { name: string; id: string }) => {
+  const res = await axios.put(
+    `${baseUrl}/${projectObject.id}`,
+    projectObject,
+    getAuthHeader(getToken())
+  );
+  delete res.data.project;
+  return res.data;
+};
+
 export default {
   create,
   remove,
+  update,
 };

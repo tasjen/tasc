@@ -26,15 +26,21 @@ const App = () => {
 
   const taskFormEditRef = useRef({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setFormEdit: (_taskObject: Omit<TaskJson, 'project'>) => {},
-    clearForms: () => {}
+    setTaskFormEdit: (_taskObject: Omit<TaskJson, 'project'>) => {},
+    clearForms: () => {},
+  });
+
+  const projectFormEditRef = useRef({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setProjectFormEdit: (_projectObject: { name: string; id: string }) => {},
+    clearForms: () => {},
   });
 
   const fetchUserData = async () => {
     try {
       const userData = await userService.getUserData();
       setUserData(userData);
-      setWorkingProject(userData.projects.find((p) => p.name === 'Default')!);
+      setWorkingProject(userData.projects[0]);
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -62,6 +68,7 @@ const App = () => {
         projects: [...userData.projects, newProject],
       });
       setWorkingProject(newProject);
+      hideAllForms();
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -89,6 +96,32 @@ const App = () => {
     }
   };
 
+  const updateProject = async (projectObject: { name: string; id: string }) => {
+    try {
+      const updatedProject = await projectService.update(projectObject);
+
+      const updatedWorkingProject = {
+        ...workingProject,
+        name: updatedProject.name,
+      };
+
+      setUserData({
+        ...userData,
+        projects: userData.projects.map((p) =>
+          p.id !== workingProject.id ? p : updatedWorkingProject
+        ),
+      });
+      setWorkingProject(updatedWorkingProject);
+      hideAllForms();
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        console.log(err.response.data.error);
+      } else if (err instanceof Error) {
+        console.log(err.message);
+      }
+    }
+  };
+
   const addTask = async (taskObject: NewTask) => {
     try {
       const newTask = await taskService.create(taskObject);
@@ -104,6 +137,7 @@ const App = () => {
             : { ...p, tasks: [...p.tasks, newTask] }
         ),
       });
+      hideAllForms();
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -145,7 +179,9 @@ const App = () => {
 
       const updatedWorkingProject = {
         ...workingProject,
-        tasks: workingProject.tasks.map((t) => t.id !== updatedTask.id ? t : updatedTask),
+        tasks: workingProject.tasks.map((t) =>
+          t.id !== updatedTask.id ? t : updatedTask
+        ),
       };
 
       setUserData({
@@ -169,6 +205,11 @@ const App = () => {
     taskFormRef.current.turnOffVisible();
     projectFormRef.current.turnOffVisible();
     taskFormEditRef.current.clearForms();
+    projectFormEditRef.current.clearForms();
+  };
+
+  const showProjectForm = () => {
+    projectFormRef.current.turnOnVisible();
   };
 
   const hideProjectForm = () => {
@@ -183,8 +224,12 @@ const App = () => {
     taskFormRef.current.turnOffVisible();
   };
 
-  const setFormEdit = (taskObject: Omit<TaskJson, 'project'>) => {
-    taskFormEditRef.current.setFormEdit(taskObject);
+  const setTaskFormEdit = (taskObject: Omit<TaskJson, 'project'>) => {
+    taskFormEditRef.current.setTaskFormEdit(taskObject);
+  };
+
+  const setProjectFormEdit = (projectObject: { name: string; id: string }) => {
+    projectFormEditRef.current.setProjectFormEdit(projectObject);
   };
 
   useEffect(() => {
@@ -233,6 +278,7 @@ const App = () => {
                 workingProject={workingProject}
                 removeProject={removeProject}
                 hideAllForms={hideAllForms}
+                setProjectFormEdit={setProjectFormEdit}
               />
             ))}
           </ul>
@@ -240,7 +286,10 @@ const App = () => {
             <Togglable buttonLabel={'+ Add project'} ref={projectFormRef}>
               <ProjectForm
                 addProject={addProject}
+                updateProject={updateProject}
+                showProjectForm={showProjectForm}
                 hideProjectForm={hideProjectForm}
+                ref={projectFormEditRef}
               />
             </Togglable>
           </div>
@@ -262,7 +311,7 @@ const App = () => {
                     key={t.id}
                     task={t}
                     removeTask={removeTask}
-                    setFormEdit={setFormEdit}
+                    setTaskFormEdit={setTaskFormEdit}
                   />
                 ))
             )}
