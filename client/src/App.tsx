@@ -65,9 +65,9 @@ const App = () => {
     }
   };
 
-  const removeProject = async (projectId: string) => {
+  const removeProject = (projectId: string) => {
     try {
-      await projectService.remove(projectId);
+      projectService.remove(projectId);
       setUserData({
         ...userData,
         projects: userData.projects.filter((e) => e.id !== projectId),
@@ -98,6 +98,31 @@ const App = () => {
         ),
       });
       taskFormRef.current.toggleVisible();
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        console.log(err.response.data.error);
+      } else if (err instanceof Error) {
+        console.log(err.message);
+      }
+    }
+  };
+
+  const removeTask = (taskId: string) => {
+    try {
+      taskService.remove(taskId);
+
+      const updatedWorkingProject = {
+        ...workingProject,
+        tasks: workingProject.tasks.filter((t) => t.id !== taskId),
+      };
+
+      setUserData({
+        ...userData,
+        projects: userData.projects.map((p) =>
+          p.id !== workingProject.id ? p : updatedWorkingProject
+        ),
+      });
+      setWorkingProject(updatedWorkingProject);
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {
         console.log(err.response.data.error);
@@ -173,7 +198,9 @@ const App = () => {
                     new Date(a.due_date).getTime() -
                     new Date(b.due_date).getTime()
                 )
-                .map((t) => <Task key={t.id} task={t} />)
+                .map((t) => (
+                  <Task key={t.id} task={t} removeTask={removeTask} />
+                ))
             )}
           </ul>
           <div id="task-adder">

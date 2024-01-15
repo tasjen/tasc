@@ -14,6 +14,11 @@ const create = async (taskObject: NewTask) => {
   return res.data;
 };
 
+const remove = async (taskId: string) => {
+  await axios.delete(`${baseUrl}/${taskId}`, getAuthHeader(getToken()));
+};
+
 export default {
   create,
+  remove
 };

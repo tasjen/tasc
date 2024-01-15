@@ -33,11 +33,10 @@ const projectSchema = new mongoose.Schema({
 projectSchema.pre('save', async function (this: ProjectDocument, next) {
   if (this.isNew) {
     const userToUpdate = await User.findById(this.user);
-    if (userToUpdate === null) {
-      return next(new Error('projectSchema: userToUpdate is null'));
+    if (userToUpdate !== null) {
+      userToUpdate.projects = [...userToUpdate.projects, this._id];
+      void userToUpdate.save();
     }
-    userToUpdate.projects = [...userToUpdate.projects, this._id];
-    void userToUpdate.save();
   }
 
   next();

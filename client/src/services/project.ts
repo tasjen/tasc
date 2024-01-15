@@ -16,8 +16,8 @@ const create = async (projectObject: {
   return res.data;
 };
 
-const remove = async (projectId: string) => {
-  await axios.delete(`${baseUrl}/${projectId}`, getAuthHeader(getToken()));
+const remove = (projectId: string) => {
+  axios.delete(`${baseUrl}/${projectId}`, getAuthHeader(getToken()));
 };
 
 export default {
