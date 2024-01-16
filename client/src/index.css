@@ -34,14 +34,18 @@
 }
 
 header {
+  grid-area: header;
   display: flex;
-  justify-content: space-between;
-  & > p {
-    grid-area: header;
+  & > #logo {
     font-size: 48px;
     font-weight: bold;
     padding-top: 1rem;
     padding-left: 1rem;
+    margin-right: auto;
+  }
+  & > #username {
+    align-self: center;
+    margin-right: 1rem;
   }
   & > #logout-button {
     height: 50%;
@@ -49,15 +53,6 @@ header {
     padding-right: 1rem;
     margin-right: 1rem;
     align-self: center;
-  }
-  & > #login-form {
-    padding: 12px;
-    div {
-      display: flex;
-      label {
-        margin-right: auto;
-      }
-    }
   }
 }
 

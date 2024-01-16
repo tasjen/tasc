@@ -223,7 +223,8 @@ const App = () => {
   ) : (
     <>
       <header>
-        <p>Todo List</p>
+        <p id="logo">Todo List</p>
+        <b id="username">{userData.username}</b>
         <button id="logout-button" onClick={handleLogOut}>
           log out
         </button>
