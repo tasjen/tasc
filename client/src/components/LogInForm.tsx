@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import loginService from '../services/login';
 import userService from '../services/user';
-import { isAxiosError } from 'axios';
+import { handleError } from '../services/util';
 
 type Props = {
   fetchUserData: () => Promise<void>;
@@ -24,11 +24,7 @@ const LogInForm = ({ fetchUserData }: Props) => {
       setUsername('');
       setPassword('');
     } catch (err: unknown) {
-      if (isAxiosError(err) && err.response) {
-        console.log(err.response.data.error);
-      } else if (err instanceof Error) {
-        console.log(err.message);
-      }
+      handleError(err);
     }
   };
 
@@ -43,11 +39,7 @@ const LogInForm = ({ fetchUserData }: Props) => {
       setPassword('');
       console.log(`username: ${username} password: ${password} is registered`);
     } catch (err: unknown) {
-      if (isAxiosError(err) && err.response) {
-        console.log(err.response.data.error);
-      } else if (err instanceof Error) {
-        console.log(err.message);
-      }
+      handleError(err);
     }
   };
 
@@ -61,6 +53,7 @@ const LogInForm = ({ fetchUserData }: Props) => {
           onChange={({ target }) => {
             setUsername(target.value);
           }}
+          required
         />
       </div>
       <div>
@@ -72,6 +65,7 @@ const LogInForm = ({ fetchUserData }: Props) => {
           onChange={({ target }) => {
             setPassword(target.value);
           }}
+          required
         />
       </div>
       <button type="submit" id="login-button" onClick={handleLogIn}>login</button>
