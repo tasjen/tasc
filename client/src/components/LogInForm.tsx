@@ -74,8 +74,8 @@ const LogInForm = ({ fetchUserData }: Props) => {
           }}
         />
       </div>
-      <button type="submit" onClick={handleLogIn}>login</button>
-      <button type="submit" onClick={handleRegister}>register</button>
+      <button type="submit" id="login-button" onClick={handleLogIn}>login</button>
+      <button type="submit" id="register-button" onClick={handleRegister}>register</button>
     </form>
   );
 };
