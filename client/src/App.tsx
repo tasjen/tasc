@@ -41,7 +41,7 @@ const App = () => {
     try {
       const userData = await userService.getUserData();
       setUserData(userData);
-      setShowingProject({...userData.projects[0]});
+      setShowingProject({ ...userData.projects[0] });
     } catch (err: unknown) {
       handleError(err);
     }
@@ -218,20 +218,26 @@ const App = () => {
     return <></>;
   }
 
-  return userData === initUserState ? (
-    <LogInForm fetchUserData={fetchUserData} />
-  ) : (
+  return (
     <>
       <header>
         <p id="logo">Todo List</p>
-        <b id="username">{userData.username}</b>
-        <button id="logout-button" onClick={handleLogOut}>
-          log out
-        </button>
+        {userData !== initUserState && (
+          <>
+            <b id="username">{userData.username ?? ''}</b>
+            <button id="logout-button" onClick={handleLogOut}>
+              log out
+            </button>
+          </>
+        )}
       </header>
       <main>
-        <nav>
-          {/* <ul id="menu-list">
+        {userData === initUserState ? (
+          <LogInForm fetchUserData={fetchUserData} />
+        ) : (
+          <>
+            <nav>
+              {/* <ul id="menu-list">
             <li id="all-task" className="menu">
               All tasks
             </li>
@@ -242,67 +248,69 @@ const App = () => {
               This week
             </li>
           </ul> */}
-          <p id="project-header">Projects</p>
-          <ul id="project-list">
-            {userData.projects.map((p) => (
-              <Project
-                key={p.id}
-                project={p}
-                handleProjectSwitch={setShowingProject}
-                showingProject={showingProject}
-                removeProject={removeProject}
-                hideAllForms={hideAllForms}
-                setProjectFormEdit={setProjectFormEdit}
-              />
-            ))}
-          </ul>
-          <div id="project-adder">
-            <Togglable buttonLabel={'+ Add project'} ref={projectFormRef}>
-              <ProjectForm
-                addProject={addProject}
-                updateProject={updateProject}
-                showProjectForm={showProjectForm}
-                hideProjectForm={hideProjectForm}
-                ref={projectFormEditRef}
-              />
-            </Togglable>
-          </div>
-        </nav>
-        <div id="main-section">
-          <p id="tab-name">{showingProject.name}</p>
-          <ul id="task-list">
-            {showingProject.tasks.length === 0 ? (
-              <p>No tasks here.</p>
-            ) : (
-              showingProject.tasks
-                .sort(
-                  (a, b) =>
-                    new Date(a.due_date).getTime() -
-                    new Date(b.due_date).getTime()
-                )
-                .map((t) => (
-                  <Task
-                    key={t.id}
-                    task={t}
-                    removeTask={removeTask}
-                    setTaskFormEdit={setTaskFormEdit}
+              <p id="project-header">Projects</p>
+              <ul id="project-list">
+                {userData.projects.map((p) => (
+                  <Project
+                    key={p.id}
+                    project={p}
+                    handleProjectSwitch={setShowingProject}
+                    showingProject={showingProject}
+                    removeProject={removeProject}
+                    hideAllForms={hideAllForms}
+                    setProjectFormEdit={setProjectFormEdit}
                   />
-                ))
-            )}
-          </ul>
-          <div id="task-adder">
-            <Togglable buttonLabel={'+ Add task'} ref={taskFormRef}>
-              <TaskForm
-                addTask={addTask}
-                updateTask={updateTask}
-                project={showingProject.id}
-                hideTaskForm={hideTaskForm}
-                showTaskForm={showTaskForm}
-                ref={taskFormEditRef}
-              />
-            </Togglable>
-          </div>
-        </div>
+                ))}
+              </ul>
+              <div id="project-adder">
+                <Togglable buttonLabel={'+ Add project'} ref={projectFormRef}>
+                  <ProjectForm
+                    addProject={addProject}
+                    updateProject={updateProject}
+                    showProjectForm={showProjectForm}
+                    hideProjectForm={hideProjectForm}
+                    ref={projectFormEditRef}
+                  />
+                </Togglable>
+              </div>
+            </nav>
+            <div id="main-section">
+              <p id="tab-name">{showingProject.name}</p>
+              <ul id="task-list">
+                {showingProject.tasks.length === 0 ? (
+                  <p>No tasks here.</p>
+                ) : (
+                  showingProject.tasks
+                    .sort(
+                      (a, b) =>
+                        new Date(a.due_date).getTime() -
+                        new Date(b.due_date).getTime()
+                    )
+                    .map((t) => (
+                      <Task
+                        key={t.id}
+                        task={t}
+                        removeTask={removeTask}
+                        setTaskFormEdit={setTaskFormEdit}
+                      />
+                    ))
+                )}
+              </ul>
+              <div id="task-adder">
+                <Togglable buttonLabel={'+ Add task'} ref={taskFormRef}>
+                  <TaskForm
+                    addTask={addTask}
+                    updateTask={updateTask}
+                    project={showingProject.id}
+                    hideTaskForm={hideTaskForm}
+                    showTaskForm={showTaskForm}
+                    ref={taskFormEditRef}
+                  />
+                </Togglable>
+              </div>
+            </div>
+          </>
+        )}
       </main>
       <footer>
         <a href="https://github.com/tasjen/todo-list-fullstack">
