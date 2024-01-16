@@ -24,9 +24,7 @@ app.use(cors());
 app.use(express.json());
 app.use(logger());
 
-app.get('/', (_req, res) => {
-  res.end('/');
-});
+app.use(express.static('dist'));
 
 app.use('/api/users', userRouter);
 app.use('/api/projects', projectRouter);
