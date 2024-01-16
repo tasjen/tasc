@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import loginService from '../services/login';
+import userService from '../services/user';
 import { isAxiosError } from 'axios';
 
 type Props = {
@@ -31,8 +32,27 @@ const LogInForm = ({ fetchUserData }: Props) => {
     }
   };
 
+  const handleRegister = async (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    try {
+      await userService.register({
+        username,
+        password,
+      });
+      setUsername('');
+      setPassword('');
+      console.log(`username: ${username} password: ${password} is registered`);
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        console.log(err.response.data.error);
+      } else if (err instanceof Error) {
+        console.log(err.message);
+      }
+    }
+  };
+
   return (
-    <form id="login-form" onSubmit={handleLogIn}>
+    <form id="login-form">
       <div>
         <label htmlFor={'username'}>username</label>
         <input
@@ -54,7 +74,8 @@ const LogInForm = ({ fetchUserData }: Props) => {
           }}
         />
       </div>
-      <button type="submit">login</button>
+      <button type="submit" onClick={handleLogIn}>login</button>
+      <button type="submit" onClick={handleRegister}>register</button>
     </form>
   );
 };

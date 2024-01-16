@@ -13,4 +13,14 @@ const getUserData = async (): Promise<UserState> => {
   return res.data;
 };
 
-export default { getUserData };
+const register = async ({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}): Promise<void> => {
+  await axios.post(baseUrl, { username, password });
+};
+
+export default { getUserData, register };
