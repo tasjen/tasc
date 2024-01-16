@@ -3,7 +3,7 @@ import { ProjectState } from '../types';
 type Props = {
   project: ProjectState;
   handleProjectSwitch: (project: ProjectState) => void;
-  workingProject: ProjectState;
+  showingProject: ProjectState;
   removeProject: (projectId: string) => void;
   hideAllForms: () => void;
   setProjectFormEdit: (projectObject: { name: string; id: string }) => void;
@@ -12,7 +12,7 @@ type Props = {
 const Project = ({
   project,
   handleProjectSwitch,
-  workingProject,
+  showingProject,
   removeProject,
   hideAllForms,
   setProjectFormEdit,
@@ -20,7 +20,7 @@ const Project = ({
   return (
     <li
       key={project.id}
-      className={`project ${project.id === workingProject.id ? 'on-page' : ''}`}
+      className={`project ${project.id === showingProject.id ? 'on-page' : ''}`}
       onClick={() => {
         handleProjectSwitch(project);
         hideAllForms();

@@ -8,13 +8,13 @@ import ProjectForm from './components/ProjectForm';
 import projectService from './services/project';
 import TaskForm from './components/TaskForm';
 import taskService from './services/task';
-import { isAxiosError } from 'axios';
 import Task from './components/Task';
+import { handleError } from './services/util';
 // import { isSameDay, isSameWeek } from 'date-fns';
 
 const App = () => {
   const [userData, setUserData] = useState(initUserState);
-  const [workingProject, setWorkingProject] = useState(initProjectState);
+  const [showingProject, setShowingProject] = useState(initProjectState);
 
   const projectFormRef = useRef({
     turnOffVisible: () => {},
@@ -41,20 +41,16 @@ const App = () => {
     try {
       const userData = await userService.getUserData();
       setUserData(userData);
-      setWorkingProject(userData.projects[0]);
+      setShowingProject({...userData.projects[0]});
     } catch (err: unknown) {
-      if (isAxiosError(err) && err.response) {
-        console.log(err.response.data.error);
-      } else if (err instanceof Error) {
-        console.log(err.message);
-      }
+      handleError(err);
     }
   };
 
   const clearUserData = () => {
     localStorage.clear();
     setUserData(initUserState);
-    setWorkingProject(initProjectState);
+    setShowingProject(initProjectState);
   };
 
   const handleLogOut = () => {
@@ -68,14 +64,10 @@ const App = () => {
         ...userData,
         projects: [...userData.projects, newProject],
       });
-      setWorkingProject(newProject);
+      setShowingProject(newProject);
       hideAllForms();
     } catch (err: unknown) {
-      if (isAxiosError(err) && err.response) {
-        console.log(err.response.data.error);
-      } else if (err instanceof Error) {
-        console.log(err.message);
-      }
+      handleError(err);
     }
   };
 
@@ -86,14 +78,10 @@ const App = () => {
         ...userData,
         projects: userData.projects.filter((e) => e.id !== projectId),
       });
-      setWorkingProject(userData.projects.find((p) => p.name === 'Default')!);
+      setShowingProject(userData.projects.find((p) => p.name === 'Default')!);
       hideAllForms();
     } catch (err: unknown) {
-      if (isAxiosError(err) && err.response) {
-        console.log(err.response.data.error);
-      } else if (err instanceof Error) {
-        console.log(err.message);
-      }
+      handleError(err);
     }
   };
 
@@ -101,50 +89,42 @@ const App = () => {
     try {
       const updatedProject = await projectService.update(projectObject);
 
-      const updatedWorkingProject = {
-        ...workingProject,
+      const updatedshowingProject = {
+        ...showingProject,
         name: updatedProject.name,
       };
 
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
-          p.id !== workingProject.id ? p : updatedWorkingProject
+          p.id !== showingProject.id ? p : updatedshowingProject
         ),
       });
-      setWorkingProject(updatedWorkingProject);
+      setShowingProject(updatedshowingProject);
       hideAllForms();
     } catch (err: unknown) {
-      if (isAxiosError(err) && err.response) {
-        console.log(err.response.data.error);
-      } else if (err instanceof Error) {
-        console.log(err.message);
-      }
+      handleError(err);
     }
   };
 
   const addTask = async (taskObject: NewTask) => {
     try {
       const newTask = await taskService.create(taskObject);
-      setWorkingProject({
-        ...workingProject,
-        tasks: [...workingProject.tasks, newTask],
+      setShowingProject({
+        ...showingProject,
+        tasks: [...showingProject.tasks, newTask],
       });
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
-          p.id !== workingProject.id
+          p.id !== showingProject.id
             ? p
             : { ...p, tasks: [...p.tasks, newTask] }
         ),
       });
       hideAllForms();
     } catch (err: unknown) {
-      if (isAxiosError(err) && err.response) {
-        console.log(err.response.data.error);
-      } else if (err instanceof Error) {
-        console.log(err.message);
-      }
+      handleError(err);
     }
   };
 
@@ -152,25 +132,21 @@ const App = () => {
     try {
       taskService.remove(taskId);
 
-      const updatedWorkingProject = {
-        ...workingProject,
-        tasks: workingProject.tasks.filter((t) => t.id !== taskId),
+      const updatedshowingProject = {
+        ...showingProject,
+        tasks: showingProject.tasks.filter((t) => t.id !== taskId),
       };
 
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
-          p.id !== workingProject.id ? p : updatedWorkingProject
+          p.id !== showingProject.id ? p : updatedshowingProject
         ),
       });
-      setWorkingProject(updatedWorkingProject);
+      setShowingProject(updatedshowingProject);
       hideAllForms();
     } catch (err: unknown) {
-      if (isAxiosError(err) && err.response) {
-        console.log(err.response.data.error);
-      } else if (err instanceof Error) {
-        console.log(err.message);
-      }
+      handleError(err);
     }
   };
 
@@ -178,9 +154,9 @@ const App = () => {
     try {
       const updatedTask = await taskService.update(taskObject);
 
-      const updatedWorkingProject = {
-        ...workingProject,
-        tasks: workingProject.tasks.map((t) =>
+      const updatedshowingProject = {
+        ...showingProject,
+        tasks: showingProject.tasks.map((t) =>
           t.id !== updatedTask.id ? t : updatedTask
         ),
       };
@@ -188,17 +164,13 @@ const App = () => {
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
-          p.id !== workingProject.id ? p : updatedWorkingProject
+          p.id !== showingProject.id ? p : updatedshowingProject
         ),
       });
-      setWorkingProject(updatedWorkingProject);
+      setShowingProject(updatedshowingProject);
       hideAllForms();
     } catch (err: unknown) {
-      if (isAxiosError(err) && err.response) {
-        console.log(err.response.data.error);
-      } else if (err instanceof Error) {
-        console.log(err.message);
-      }
+      handleError(err);
     }
   };
 
@@ -258,7 +230,7 @@ const App = () => {
       </header>
       <main>
         <nav>
-          <ul id="menu-list">
+          {/* <ul id="menu-list">
             <li id="all-task" className="menu">
               All tasks
             </li>
@@ -268,15 +240,15 @@ const App = () => {
             <li id="this-week-task" className="menu">
               This week
             </li>
-          </ul>
+          </ul> */}
           <p id="project-header">Projects</p>
           <ul id="project-list">
             {userData.projects.map((p) => (
               <Project
                 key={p.id}
                 project={p}
-                handleProjectSwitch={setWorkingProject}
-                workingProject={workingProject}
+                handleProjectSwitch={setShowingProject}
+                showingProject={showingProject}
                 removeProject={removeProject}
                 hideAllForms={hideAllForms}
                 setProjectFormEdit={setProjectFormEdit}
@@ -296,12 +268,12 @@ const App = () => {
           </div>
         </nav>
         <div id="main-section">
-          <p id="tab-name">{workingProject.name}</p>
+          <p id="tab-name">{showingProject.name}</p>
           <ul id="task-list">
-            {workingProject.tasks.length === 0 ? (
+            {showingProject.tasks.length === 0 ? (
               <p>No tasks here.</p>
             ) : (
-              workingProject.tasks
+              showingProject.tasks
                 .sort(
                   (a, b) =>
                     new Date(a.due_date).getTime() -
@@ -322,7 +294,7 @@ const App = () => {
               <TaskForm
                 addTask={addTask}
                 updateTask={updateTask}
-                project={workingProject.id}
+                project={showingProject.id}
                 hideTaskForm={hideTaskForm}
                 showTaskForm={showTaskForm}
                 ref={taskFormEditRef}
