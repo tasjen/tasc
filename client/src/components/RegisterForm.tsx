@@ -53,7 +53,7 @@ const RegisterForm = ({ setNoti }: Props) => {
           <label htmlFor={'register-password'}>password</label>
           <input
             id={'register-password'}
-            type="password"
+            type="text"
             value={password}
             onChange={({ target }) => {
               setPassword(target.value);
