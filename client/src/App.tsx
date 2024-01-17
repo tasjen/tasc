@@ -10,6 +10,7 @@ import TaskForm from './components/TaskForm';
 import taskService from './services/task';
 import Task from './components/Task';
 import { handleError } from './services/util';
+import RegisterForm from './components/RegisterForm';
 // import { isSameDay, isSameWeek } from 'date-fns';
 
 const App = () => {
@@ -233,7 +234,12 @@ const App = () => {
       </header>
       <main>
         {userData === initUserState ? (
-          <LogInForm fetchUserData={fetchUserData} />
+          <div>
+            <LogInForm
+              fetchUserData={fetchUserData}
+            />
+            <RegisterForm />
+          </div>
         ) : (
           <>
             <nav>

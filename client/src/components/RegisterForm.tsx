@@ -1,39 +1,34 @@
 import { useState } from 'react';
-import loginService from '../services/login';
+import userService from '../services/user';
 import { handleError } from '../services/util';
 
-type Props = {
-  fetchUserData: () => Promise<void>;
-};
-
-const LogInForm = ({ fetchUserData }: Props) => {
+const RegisterForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogIn = async (event: React.SyntheticEvent) => {
+  const handleRegister = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     try {
-      const userToken = await loginService.login({
+      await userService.register({
         username,
         password,
       });
+      console.log(`username: ${username} password: ${password} is registered`);
       setUsername('');
       setPassword('');
-      localStorage.setItem('loggedUser', JSON.stringify(userToken));
-      await fetchUserData();
     } catch (err: unknown) {
       handleError(err);
     }
   };
 
   return (
-    <form id="login-form" onSubmit={handleLogIn}>
+    <form id="register-form" onSubmit={handleRegister}>
       <fieldset>
-        <legend>Login</legend>
+        <legend>Register</legend>
         <div>
-          <label htmlFor={'login-username'}>username</label>
+          <label htmlFor={'register-username'}>username</label>
           <input
-            id={'login-username'}
+            id={'register-username'}
             type="text"
             value={username}
             onChange={({ target }) => {
@@ -44,9 +39,9 @@ const LogInForm = ({ fetchUserData }: Props) => {
           />
         </div>
         <div>
-          <label htmlFor={'login-password'}>password</label>
+          <label htmlFor={'register-password'}>password</label>
           <input
-            id={'login-password'}
+            id={'register-password'}
             type="password"
             value={password}
             onChange={({ target }) => {
@@ -56,12 +51,12 @@ const LogInForm = ({ fetchUserData }: Props) => {
             minLength={6}
           />
         </div>
-        <button type="submit" id="login-button">
-          login
+        <button type="submit" id="register-button">
+          register
         </button>
       </fieldset>
     </form>
   );
 };
 
-export default LogInForm;
+export default RegisterForm;

@@ -60,8 +60,12 @@ main {
   grid-area: main;
   display: grid;
   grid-template-columns: 350px 1fr;
-  & > #login-form {
+  #login-form,
+  #register-form {
     margin: 1rem;
+  }
+  fieldset {
+    padding: 1rem;
   }
 }
 
