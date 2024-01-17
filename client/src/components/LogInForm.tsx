@@ -4,9 +4,10 @@ import { handleError } from '../services/util';
 
 type Props = {
   fetchUserData: () => Promise<void>;
+  setNoti: ({ text, error }: { text: string; error: boolean }) => void;
 };
 
-const LogInForm = ({ fetchUserData }: Props) => {
+const LogInForm = ({ fetchUserData, setNoti }: Props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,8 +23,11 @@ const LogInForm = ({ fetchUserData }: Props) => {
       localStorage.setItem('loggedUser', JSON.stringify(userToken));
       await fetchUserData();
     } catch (err: unknown) {
-      handleError(err);
+      handleError(err, setNoti);
     }
+    setTimeout(() => {
+      setNoti({ text: '', error: false });
+    }, 5000);
   };
 
   return (

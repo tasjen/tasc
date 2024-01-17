@@ -8,18 +8,23 @@ export const getAuthHeader = (token: string) => {
 
 export const getToken = (): string => {
   const loggedUser = JSON.parse(localStorage.getItem('loggedUser')!);
-  return loggedUser.token
-}
+  return loggedUser.token;
+};
 
 export const getUserId = (): string => {
   const loggedUser = JSON.parse(localStorage.getItem('loggedUser')!);
-  return loggedUser.username
-}
+  return loggedUser.username;
+};
 
-export const handleError = (err: unknown) => {
+export const handleError = (
+  err: unknown,
+  setNoti: ({ text, error }: { text: string; error: boolean }) => void
+) => {
   if (isAxiosError(err) && err.response) {
     console.log(err.response.data.error);
+    setNoti({ text: err.response.data.error, error: true });
   } else if (err instanceof Error) {
     console.log(err.message);
+    setNoti({ text: err.message, error: true });
   }
-}
+};

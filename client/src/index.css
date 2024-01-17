@@ -41,7 +41,15 @@ header {
     font-weight: bold;
     padding-top: 1rem;
     padding-left: 1rem;
+  }
+  & > #noti {
+    color: green;
+    align-self: center;
+    margin-left: auto;
     margin-right: auto;
+    &.error {
+      color: red;
+    }
   }
   & > #username {
     align-self: center;

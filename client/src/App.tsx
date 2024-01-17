@@ -11,11 +11,13 @@ import taskService from './services/task';
 import Task from './components/Task';
 import { handleError } from './services/util';
 import RegisterForm from './components/RegisterForm';
+import Notification from './components/Notification';
 // import { isSameDay, isSameWeek } from 'date-fns';
 
 const App = () => {
   const [userData, setUserData] = useState(initUserState);
   const [showingProject, setShowingProject] = useState(initProjectState);
+  const [noti, setNoti] = useState({ text: '', error: false });
 
   const projectFormRef = useRef({
     turnOffVisible: () => {},
@@ -44,8 +46,11 @@ const App = () => {
       setUserData(userData);
       setShowingProject({ ...userData.projects[0] });
     } catch (err: unknown) {
-      handleError(err);
+      handleError(err, setNoti);
     }
+    setTimeout(() => {
+      setNoti({ text: '', error: false });
+    }, 5000);
   };
 
   const clearUserData = () => {
@@ -68,8 +73,11 @@ const App = () => {
       setShowingProject(newProject);
       hideAllForms();
     } catch (err: unknown) {
-      handleError(err);
+      handleError(err, setNoti);
     }
+    setTimeout(() => {
+      setNoti({ text: '', error: false });
+    }, 5000);
   };
 
   const removeProject = (projectId: string) => {
@@ -82,8 +90,11 @@ const App = () => {
       setShowingProject(userData.projects.find((p) => p.name === 'Default')!);
       hideAllForms();
     } catch (err: unknown) {
-      handleError(err);
+      handleError(err, setNoti);
     }
+    setTimeout(() => {
+      setNoti({ text: '', error: false });
+    }, 5000);
   };
 
   const updateProject = async (projectObject: { name: string; id: string }) => {
@@ -104,8 +115,11 @@ const App = () => {
       setShowingProject(updatedshowingProject);
       hideAllForms();
     } catch (err: unknown) {
-      handleError(err);
+      handleError(err, setNoti);
     }
+    setTimeout(() => {
+      setNoti({ text: '', error: false });
+    }, 5000);
   };
 
   const addTask = async (taskObject: NewTask) => {
@@ -125,8 +139,11 @@ const App = () => {
       });
       hideAllForms();
     } catch (err: unknown) {
-      handleError(err);
+      handleError(err, setNoti);
     }
+    setTimeout(() => {
+      setNoti({ text: '', error: false });
+    }, 5000);
   };
 
   const removeTask = (taskId: string) => {
@@ -147,8 +164,11 @@ const App = () => {
       setShowingProject(updatedshowingProject);
       hideAllForms();
     } catch (err: unknown) {
-      handleError(err);
+      handleError(err, setNoti);
     }
+    setTimeout(() => {
+      setNoti({ text: '', error: false });
+    }, 5000);
   };
 
   const updateTask = async (taskObject: TaskJson) => {
@@ -171,8 +191,11 @@ const App = () => {
       setShowingProject(updatedshowingProject);
       hideAllForms();
     } catch (err: unknown) {
-      handleError(err);
+      handleError(err, setNoti);
     }
+    setTimeout(() => {
+      setNoti({ text: '', error: false });
+    }, 5000);
   };
 
   const hideAllForms = () => {
@@ -223,6 +246,7 @@ const App = () => {
     <>
       <header>
         <p id="logo">Todo List</p>
+        <Notification noti={noti} />
         {userData !== initUserState && (
           <>
             <b id="username">{userData.username ?? ''}</b>
@@ -235,10 +259,8 @@ const App = () => {
       <main>
         {userData === initUserState ? (
           <div>
-            <LogInForm
-              fetchUserData={fetchUserData}
-            />
-            <RegisterForm />
+            <LogInForm fetchUserData={fetchUserData} setNoti={setNoti} />
+            <RegisterForm setNoti={setNoti} />
           </div>
         ) : (
           <>

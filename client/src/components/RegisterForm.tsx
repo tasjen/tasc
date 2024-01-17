@@ -2,7 +2,11 @@ import { useState } from 'react';
 import userService from '../services/user';
 import { handleError } from '../services/util';
 
-const RegisterForm = () => {
+type Props = {
+  setNoti: ({ text, error }: { text: string; error: boolean }) => void;
+};
+
+const RegisterForm = ({ setNoti }: Props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -16,9 +20,16 @@ const RegisterForm = () => {
       console.log(`username: ${username} password: ${password} is registered`);
       setUsername('');
       setPassword('');
+      setNoti({
+        text: `username: ${username} password: ${password} is registered`,
+        error: false,
+      });
     } catch (err: unknown) {
-      handleError(err);
+      handleError(err, setNoti);
     }
+    setTimeout(() => {
+      setNoti({ text: '', error: false });
+    }, 5000);
   };
 
   return (
