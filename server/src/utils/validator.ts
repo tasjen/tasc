@@ -17,9 +17,9 @@ const isString = (param: unknown): param is string => {
 
 export const isJwtFormat = (param: unknown): param is JwtFormat => {
   return (
+    typeof param === 'object' &&
     param !== undefined &&
     param !== null &&
-    typeof param === 'object' &&
     'username' in param &&
     'id' in param &&
     isString(param.username) &&
@@ -34,6 +34,9 @@ const parseUsername = async (username: unknown): Promise<string> => {
   if (!(await isUniqueUsername(username))) {
     throw new ValError(`Username must be unique: '${username}' is already taken`);
   }
+  if (username.includes(' ')) {
+    throw new ValError(`Empty spaces are not allowed in username: '${username}'`);
+  }
   return username;
 };
 
@@ -44,6 +47,9 @@ const isUniqueUsername = async (username: string): Promise<boolean> => {
 const parsePassword = (password: unknown): string => {
   if (!isString(password) || password.length < 6) {
     throw new ValError('Invalid password');
+  }
+  if (password.includes(' ')) {
+    throw new ValError(`Empty spaces are not allowed in password: '${password}'`);
   }
   return password;
 };
