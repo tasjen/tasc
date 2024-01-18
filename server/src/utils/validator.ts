@@ -28,7 +28,7 @@ export const isJwtFormat = (param: unknown): param is JwtFormat => {
 };
 
 const parseUsername = async (username: unknown): Promise<string> => {
-  if (!isString(username) || username.length <= 5) {
+  if (!isString(username) || username.length < 6) {
     throw new ValError('Invalid username');
   }
   if (!(await isUniqueUsername(username))) {
@@ -42,7 +42,7 @@ const isUniqueUsername = async (username: string): Promise<boolean> => {
 };
 
 const parsePassword = (password: unknown): string => {
-  if (!isString(password) || password.length <= 5) {
+  if (!isString(password) || password.length < 6) {
     throw new ValError('Invalid password');
   }
   return password;
