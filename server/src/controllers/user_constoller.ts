@@ -37,7 +37,7 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 const addUser = async (req: Request, res: Response): Promise<void> => {
-  const newUser = parseUser(req.body);
+  const newUser = await parseUser(req.body);
   const docUser = new User(newUser);
 
   const savedUser = await docUser.save();

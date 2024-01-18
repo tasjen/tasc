@@ -27,11 +27,18 @@ export const isJwtFormat = (param: unknown): param is JwtFormat => {
   );
 };
 
-const parseUsername = (username: unknown): string => {
+const parseUsername = async (username: unknown): Promise<string> => {
   if (!isString(username) || username.length <= 5) {
     throw new ValError('Invalid username');
   }
+  if (!(await isUniqueUsername(username))) {
+    throw new ValError(`Username must be unique: '${username}' is already taken`);
+  }
   return username;
+};
+
+const isUniqueUsername = async (username: string): Promise<boolean> => {
+  return !(await User.findOne({ username: username }));
 };
 
 const parsePassword = (password: unknown): string => {
@@ -41,7 +48,7 @@ const parsePassword = (password: unknown): string => {
   return password;
 };
 
-export const parseUser = (object: unknown): NewUser => {
+export const parseUser = async (object: unknown): Promise<NewUser> => {
   if (
     !object ||
     typeof object !== 'object' ||
@@ -50,7 +57,7 @@ export const parseUser = (object: unknown): NewUser => {
     throw new ValError('Incorrect or missing data');
   }
   const newUser: NewUser = {
-    username: parseUsername(object.username),
+    username: await parseUsername(object.username),
     password: parsePassword(object.password),
     projects: [],
   };

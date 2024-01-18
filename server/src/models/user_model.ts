@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import uniqueValidator from 'mongoose-unique-validator';
 import { NewUser } from '../utils/types';
 import bcrypt from 'bcrypt';
 import Project from './project_model';
@@ -16,7 +15,6 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
     minlength: 5,
     trim: true,
   },
@@ -33,8 +31,6 @@ const userSchema = new mongoose.Schema({
     },
   ],
 });
-
-userSchema.plugin(uniqueValidator);
 
 userSchema.pre('save', async function (this: UserDocument, next) {
   if (!this.isModified('password')) {
