@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies and Build
-        run: chmod 764 build.sh && ./build.sh
+        run: sh build.sh
 
   deploy:
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip') }}
