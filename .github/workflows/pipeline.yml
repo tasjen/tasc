@@ -9,21 +9,19 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  build_and_test:
+  build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Install dependencies
-        run: npm install
-      - name: build
-        run: npm run build
+      - name: Install dependencies and Build
+        run: chmod 764 build.sh && ./build.sh
 
   deploy:
     if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip') }}
-    needs: build_and_test
+    needs: build
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
