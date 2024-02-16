@@ -1,0 +1,18 @@
+name: ping
+
+on:
+  schedule:
+    - cron: '0/5 * * * *'
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
+        with:
+          url: https://fso-part11.onrender.com/
+          follow-redirect: false
+          max-attempts: 3
+          retry-delay: 60s
+          retry-all: false
