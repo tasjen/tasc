@@ -1,14 +1,12 @@
-FROM node:20 AS build
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY . .
-ENV NODE_ENV=prod
 RUN npm ci
-RUN npm run tsc
+RUN npm run build
 
-FROM node:20-bookworm-slim
+FROM gcr.io/distroless/nodejs20-debian12
 WORKDIR /app
-COPY --from=build /app/build .
-COPY --from=build /app/package* .
-COPY --from=build /app/.env .
-RUN npm ci --omit=dev
-CMD ["node", "index.js"]
+ENV NODE_ENV=prod
+COPY --from=builder /app/build .
+COPY ./.env .
+CMD ["--enable-source-maps", "index.js"]
