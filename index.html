@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo List</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+      }
+      .loader {
+        width: 50px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 8px solid;
+        border-color: #000 #0000;
+        animation: l1 1s infinite;
+      }
+      @keyframes l1 {
+        to {
+          transform: rotate(0.5turn);
+        }
+      }
+    </style>
+    <script>
+      fetch('https://todo-list-fullstack-1gms.onrender.com', {
+        mode: 'no-cors',
+      })
+      .then(() => {
+        window.location = 'https://todo-list-fullstack-1gms.onrender.com';
+      });
+      setTimeout(() => {
+        document.querySelector('body').innerHTML = `
+          <h1>Server is starting.</h1>
+          <h2>Please wait, this may take a couple minutes</h2>
+          <div class="loader"></div>
+        `;
+      }, 500);
+    </script>
+  </head>
+  <body></body>
+</html>
