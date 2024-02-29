@@ -109,7 +109,7 @@ const App = () => {
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
-          p.id !== showingProject.id ? p : updatedshowingProject
+          p.id !== showingProject.id ? p : updatedshowingProject,
         ),
       });
       setShowingProject(updatedshowingProject);
@@ -134,7 +134,7 @@ const App = () => {
         projects: userData.projects.map((p) =>
           p.id !== showingProject.id
             ? p
-            : { ...p, tasks: [...p.tasks, newTask] }
+            : { ...p, tasks: [...p.tasks, newTask] },
         ),
       });
       hideAllForms();
@@ -158,7 +158,7 @@ const App = () => {
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
-          p.id !== showingProject.id ? p : updatedshowingProject
+          p.id !== showingProject.id ? p : updatedshowingProject,
         ),
       });
       setShowingProject(updatedshowingProject);
@@ -178,14 +178,14 @@ const App = () => {
       const updatedshowingProject = {
         ...showingProject,
         tasks: showingProject.tasks.map((t) =>
-          t.id !== updatedTask.id ? t : updatedTask
+          t.id !== updatedTask.id ? t : updatedTask,
         ),
       };
 
       setUserData({
         ...userData,
         projects: userData.projects.map((p) =>
-          p.id !== showingProject.id ? p : updatedshowingProject
+          p.id !== showingProject.id ? p : updatedshowingProject,
         ),
       });
       setShowingProject(updatedshowingProject);
@@ -277,7 +277,7 @@ const App = () => {
             </li>
           </ul> */}
               <p id="project-header">Projects</p>
-              <ul id="project-list">
+              <ul id="project-list" data-test="project-list">
                 {userData.projects.map((p) => (
                   <Project
                     key={p.id}
@@ -312,7 +312,7 @@ const App = () => {
                     .sort(
                       (a, b) =>
                         new Date(a.due_date).getTime() -
-                        new Date(b.due_date).getTime()
+                        new Date(b.due_date).getTime(),
                     )
                     .map((t) => (
                       <Task

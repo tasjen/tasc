@@ -13,7 +13,10 @@ module.exports = {
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['react', 'react-refresh', 'cypress'],
+  plugins: ['react', 'react-refresh', 'jest', 'cypress'],
+  ecmaFeatures: {
+    jsx: true,
+  },
   rules: {
     'react-refresh/only-export-components': [
       'warn',
