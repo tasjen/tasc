@@ -2,29 +2,22 @@ import { ProjectState } from '../types';
 
 type Props = {
   project: ProjectState;
-  handleProjectSwitch: (project: ProjectState) => void;
   showingProject: ProjectState;
   removeProject: (projectId: string) => void;
-  hideAllForms: () => void;
   setProjectFormEdit: (projectObject: { name: string; id: string }) => void;
 };
 
 const Project = ({
   project,
-  handleProjectSwitch,
   showingProject,
   removeProject,
-  hideAllForms,
   setProjectFormEdit,
 }: Props) => {
   return (
     <li
       key={project.id}
       className={`project ${project.id === showingProject.id ? 'on-page' : ''}`}
-      onClick={() => {
-        handleProjectSwitch(project);
-        hideAllForms();
-      }}
+      onClick={() => {}}
     >
       <p className="project-name">{project.name}</p>
       {project.name !== 'Default' && (
@@ -34,7 +27,6 @@ const Project = ({
             onClick={(event) => {
               event.stopPropagation();
               setProjectFormEdit(project);
-              handleProjectSwitch(project);
             }}
           >
             📝
@@ -44,7 +36,6 @@ const Project = ({
             onClick={(event) => {
               event.stopPropagation();
               removeProject(project.id);
-              hideAllForms();
             }}
           >
             ❌

@@ -1,157 +1,139 @@
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { useContext } from 'react';
 import { NewTask, TaskJson } from '../types';
-import { format } from 'date-fns';
+import TaskFormContext from '../context/TaskFormContext';
 
 type Props = {
   addTask: (taskObject: NewTask) => Promise<void>;
   project: string;
   updateTask: (taskObject: TaskJson) => Promise<void>;
-  hideTaskForm: () => void;
-  showTaskForm: () => void;
 };
 
-const TaskForm = forwardRef(
-  (
-    { addTask, updateTask, project, hideTaskForm, showTaskForm }: Props,
-    ref
-  ) => {
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [dueDate, setDueDate] = useState('');
-    const [priority, setPriority] = useState(1);
+const TaskForm = ({ addTask, updateTask, project }: Props) => {
+  const {
+    nameInput,
+    descriptionInput,
+    dueDateInput,
+    priorityInput,
+    isVisible,
+    updatingTaskId,
+    show,
+    hide,
+    setNameInput,
+    setDescriptionInput,
+    setDueDateInput,
+    setPriorityInput,
+  } = useContext(TaskFormContext);
 
-    const [taskId, setTaskId] = useState('');
-    const [isUpdating, setIsUpdating] = useState(false);
+  const handleSubmit = async (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    if (updatingTaskId !== null) {
+      await updateTask({
+        name: nameInput,
+        description: descriptionInput,
+        due_date: dueDateInput,
+        priority: priorityInput,
+        project,
+        id: updatingTaskId,
+      });
+    } else {
+      await addTask({
+        name: nameInput,
+        description: descriptionInput,
+        due_date: new Date(dueDateInput),
+        priority: priorityInput,
+        project,
+      });
+    }
+    hide();
+  };
 
-    const setTaskFormEdit = (taskObject: Omit<TaskJson, 'project'>) => {
-      setIsUpdating(true);
+  const handlePriority = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPriorityInput(+event.target.value as 1 | 2 | 3);
+  };
 
-      setName(taskObject.name);
-      setDescription(taskObject.description);
-      setDueDate(format(taskObject.due_date, 'yyyy-MM-dd'));
-      setPriority(taskObject.priority);
-      setTaskId(taskObject.id);
+  const handleDueDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDueDateInput(event.target.value);
+  };
 
-      showTaskForm();
-    };
-
-    const handleSubmit = async (event: React.SyntheticEvent) => {
-      event.preventDefault();
-      if (isUpdating) {
-        await updateTask({
-          name,
-          description,
-          due_date: dueDate,
-          priority,
-          project,
-          id: taskId,
-        });
-      } else {
-        await addTask({
-          name,
-          description,
-          due_date: new Date(dueDate),
-          priority,
-          project,
-        });
-      }
-      clearForms();
-    };
-
-    const clearForms = () => {
-      hideTaskForm();
-      setName('');
-      setDescription('');
-      setDueDate('');
-      setPriority(1);
-      setTaskId('');
-      setIsUpdating(false);
-    };
-
-    const handlePriority = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setPriority(+event.target.value);
-    };
-
-    const handleDueDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setDueDate(event.target.value);
-    };
-
-    useImperativeHandle(ref, () => {
-      return { setTaskFormEdit, clearForms };
-    });
-
-    return (
-      <form id="task-form" onSubmit={handleSubmit}>
-        <div id="name-input-container">
-          <label htmlFor="name-input">Task name</label>
-          <input
-            type="text"
-            id="name-input"
-            placeholder="Task name"
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-            required
-          ></input>
-        </div>
-        <div id="description-input-container">
-          <label htmlFor="description-input">Task description</label>
-          <textarea
-            id="description-input"
-            placeholder="Task description"
-            value={description}
-            onChange={({ target }) => setDescription(target.value)}
-          ></textarea>
-        </div>
-        <div id="date-input-container">
-          <label htmlFor="date-input">Due date</label>
-          <input
-            type="date"
-            id="date-input"
-            value={dueDate}
-            onChange={handleDueDate}
-            required
-          />
-        </div>
-        <div id="priority-input-container">
-          <label>Priority</label>
-          <div>
+  return (
+    <div>
+      {isVisible ? (
+        <form id="task-form" onSubmit={handleSubmit}>
+          <div id="name-input-container">
+            <label htmlFor="name-input">Task name</label>
             <input
-              type="radio"
-              id="low"
-              name="priority"
-              value="1"
-              checked={priority === 1}
-              onChange={handlePriority}
+              type="text"
+              id="name-input"
+              placeholder="Task name"
+              value={nameInput}
+              onChange={({ target }) => setNameInput(target.value)}
+              required
+            ></input>
+          </div>
+          <div id="description-input-container">
+            <label htmlFor="description-input">Task description</label>
+            <textarea
+              id="description-input"
+              placeholder="Task description"
+              value={descriptionInput}
+              onChange={({ target }) => setDescriptionInput(target.value)}
+            ></textarea>
+          </div>
+          <div id="date-input-container">
+            <label htmlFor="date-input">Due date</label>
+            <input
+              type="date"
+              id="date-input"
+              value={dueDateInput}
+              onChange={handleDueDate}
               required
             />
-            <label htmlFor="low">Low</label>{' '}
-            <input
-              type="radio"
-              id="medium"
-              name="priority"
-              value="2"
-              checked={priority === 2}
-              onChange={handlePriority}
-            />
-            <label htmlFor="medium">Medium</label>{' '}
-            <input
-              type="radio"
-              id="high"
-              name="priority"
-              value="3"
-              checked={priority === 3}
-              onChange={handlePriority}
-            />
-            <label htmlFor="high">High</label>
           </div>
-        </div>
-        <button type="submit">{isUpdating ? 'Update' : 'Add'}</button>
-        <button type="button" onClick={clearForms}>
-          Cancel
-        </button>
-      </form>
-    );
-  }
-);
+          <div id="priority-input-container">
+            <label>Priority</label>
+            <div>
+              <input
+                type="radio"
+                id="low"
+                name="priority"
+                value="1"
+                checked={priorityInput === 1}
+                onChange={handlePriority}
+                required
+              />
+              <label htmlFor="low">Low</label>{' '}
+              <input
+                type="radio"
+                id="medium"
+                name="priority"
+                value="2"
+                checked={priorityInput === 2}
+                onChange={handlePriority}
+              />
+              <label htmlFor="medium">Medium</label>{' '}
+              <input
+                type="radio"
+                id="high"
+                name="priority"
+                value="3"
+                checked={priorityInput === 3}
+                onChange={handlePriority}
+              />
+              <label htmlFor="high">High</label>
+            </div>
+          </div>
+          <button type="submit">
+            {updatingTaskId == null ? 'Add' : 'Update'}
+          </button>
+          <button type="button" onClick={hide}>
+            Cancel
+          </button>
+        </form>
+      ) : (
+        <button onClick={show}>+ Add task</button>
+      )}
+    </div>
+  );
+};
 
 export default TaskForm;

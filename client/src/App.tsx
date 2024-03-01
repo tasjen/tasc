@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import userService from './services/user';
 import { NewTask, TaskJson, initProjectState, initUserState } from './types';
 import LogInForm from './components/LogInForm';
 import Project from './components/Project';
-import Togglable from './components/Togglable';
 import ProjectForm from './components/ProjectForm';
 import projectService from './services/project';
 import TaskForm from './components/TaskForm';
@@ -12,6 +11,9 @@ import Task from './components/Task';
 import { handleError } from './services/util';
 import RegisterForm from './components/RegisterForm';
 import Notification from './components/Notification';
+import Footer from './components/Footer';
+import ProjectFormContext from './context/ProjectFormContext';
+import TaskFormContext from './context/TaskFormContext';
 // import { isSameDay, isSameWeek } from 'date-fns';
 
 const App = () => {
@@ -19,26 +21,8 @@ const App = () => {
   const [showingProject, setShowingProject] = useState(initProjectState);
   const [noti, setNoti] = useState({ text: '', error: false });
 
-  const projectFormRef = useRef({
-    turnOffVisible: () => {},
-    turnOnVisible: () => {},
-  });
-  const taskFormRef = useRef({
-    turnOffVisible: () => {},
-    turnOnVisible: () => {},
-  });
-
-  const taskFormEditRef = useRef({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setTaskFormEdit: (_taskObject: Omit<TaskJson, 'project'>) => {},
-    clearForms: () => {},
-  });
-
-  const projectFormEditRef = useRef({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    setProjectFormEdit: (_projectObject: { name: string; id: string }) => {},
-    clearForms: () => {},
-  });
+  const projectForm = useContext(ProjectFormContext);
+  const taskForm = useContext(TaskFormContext);
 
   const fetchUserData = async () => {
     try {
@@ -71,7 +55,6 @@ const App = () => {
         projects: [...userData.projects, newProject],
       });
       setShowingProject(newProject);
-      hideAllForms();
     } catch (err: unknown) {
       handleError(err, setNoti);
     }
@@ -88,7 +71,6 @@ const App = () => {
         projects: userData.projects.filter((e) => e.id !== projectId),
       });
       setShowingProject(userData.projects.find((p) => p.name === 'Default')!);
-      hideAllForms();
     } catch (err: unknown) {
       handleError(err, setNoti);
     }
@@ -113,7 +95,6 @@ const App = () => {
         ),
       });
       setShowingProject(updatedshowingProject);
-      hideAllForms();
     } catch (err: unknown) {
       handleError(err, setNoti);
     }
@@ -137,7 +118,6 @@ const App = () => {
             : { ...p, tasks: [...p.tasks, newTask] },
         ),
       });
-      hideAllForms();
     } catch (err: unknown) {
       handleError(err, setNoti);
     }
@@ -162,7 +142,6 @@ const App = () => {
         ),
       });
       setShowingProject(updatedshowingProject);
-      hideAllForms();
     } catch (err: unknown) {
       handleError(err, setNoti);
     }
@@ -189,44 +168,12 @@ const App = () => {
         ),
       });
       setShowingProject(updatedshowingProject);
-      hideAllForms();
     } catch (err: unknown) {
       handleError(err, setNoti);
     }
     setTimeout(() => {
       setNoti({ text: '', error: false });
     }, 5000);
-  };
-
-  const hideAllForms = () => {
-    taskFormRef.current.turnOffVisible();
-    projectFormRef.current.turnOffVisible();
-    taskFormEditRef.current.clearForms();
-    projectFormEditRef.current.clearForms();
-  };
-
-  const showProjectForm = () => {
-    projectFormRef.current.turnOnVisible();
-  };
-
-  const hideProjectForm = () => {
-    projectFormRef.current.turnOffVisible();
-  };
-
-  const showTaskForm = () => {
-    taskFormRef.current.turnOnVisible();
-  };
-
-  const hideTaskForm = () => {
-    taskFormRef.current.turnOffVisible();
-  };
-
-  const setTaskFormEdit = (taskObject: Omit<TaskJson, 'project'>) => {
-    taskFormEditRef.current.setTaskFormEdit(taskObject);
-  };
-
-  const setProjectFormEdit = (projectObject: { name: string; id: string }) => {
-    projectFormEditRef.current.setProjectFormEdit(projectObject);
   };
 
   useEffect(() => {
@@ -265,41 +212,27 @@ const App = () => {
         ) : (
           <>
             <nav>
-              {/* <ul id="menu-list">
-            <li id="all-task" className="menu">
-              All tasks
-            </li>
-            <li id="today-task" className="menu">
-              Today
-            </li>
-            <li id="this-week-task" className="menu">
-              This week
-            </li>
-          </ul> */}
               <p id="project-header">Projects</p>
               <ul id="project-list" data-test="project-list">
                 {userData.projects.map((p) => (
                   <Project
                     key={p.id}
                     project={p}
-                    handleProjectSwitch={setShowingProject}
                     showingProject={showingProject}
                     removeProject={removeProject}
-                    hideAllForms={hideAllForms}
-                    setProjectFormEdit={setProjectFormEdit}
+                    setProjectFormEdit={() => {
+                      projectForm.setNameInput(p.name);
+                      projectForm.setUpdatingProjectId(p.id);
+                      projectForm.show();
+                    }}
                   />
                 ))}
               </ul>
               <div id="project-adder">
-                <Togglable buttonLabel={'+ Add project'} ref={projectFormRef}>
-                  <ProjectForm
-                    addProject={addProject}
-                    updateProject={updateProject}
-                    showProjectForm={showProjectForm}
-                    hideProjectForm={hideProjectForm}
-                    ref={projectFormEditRef}
-                  />
-                </Togglable>
+                <ProjectForm
+                  addProject={addProject}
+                  updateProject={updateProject}
+                />
               </div>
             </nav>
             <div id="main-section">
@@ -319,32 +252,23 @@ const App = () => {
                         key={t.id}
                         task={t}
                         removeTask={removeTask}
-                        setTaskFormEdit={setTaskFormEdit}
+                        setTaskFormEdit={() => taskForm.setUpdatingTask(t)}
                       />
                     ))
                 )}
               </ul>
               <div id="task-adder">
-                <Togglable buttonLabel={'+ Add task'} ref={taskFormRef}>
-                  <TaskForm
-                    addTask={addTask}
-                    updateTask={updateTask}
-                    project={showingProject.id}
-                    hideTaskForm={hideTaskForm}
-                    showTaskForm={showTaskForm}
-                    ref={taskFormEditRef}
-                  />
-                </Togglable>
+                <TaskForm
+                  addTask={addTask}
+                  updateTask={updateTask}
+                  project={showingProject.id}
+                />
               </div>
             </div>
           </>
         )}
       </main>
-      <footer>
-        <a href="https://github.com/tasjen/todo-list-fullstack">
-          <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" />
-        </a>
-      </footer>
+      <Footer />
     </>
   );
 };
