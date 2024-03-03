@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { NewUser } from '../utils/types';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import Project from './project_model';
 
 export interface UserDocument

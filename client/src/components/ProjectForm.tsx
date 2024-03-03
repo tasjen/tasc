@@ -10,7 +10,7 @@ type Props = {
 const ProjectForm = forwardRef(
   (
     { addProject, updateProject, showProjectForm, hideProjectForm }: Props,
-    ref
+    ref,
   ) => {
     const [projectName, setProjectName] = useState('');
 
@@ -55,6 +55,7 @@ const ProjectForm = forwardRef(
         <input
           type="text"
           id="project-name-input"
+          data-test="project-name-input"
           placeholder="Project name"
           value={projectName}
           onChange={({ target }) => {
@@ -62,13 +63,15 @@ const ProjectForm = forwardRef(
           }}
           required
         />
-        <button type="submit">{isUpdating ? 'Update' : 'Add'}</button>
+        <button data-test="add-project-button" type="submit">
+          {isUpdating ? 'Update' : 'Add'}
+        </button>
         <button type="button" onClick={clearForms}>
           Cancel
         </button>
       </form>
     );
-  }
+  },
 );
 
 export default ProjectForm;

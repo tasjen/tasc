@@ -35,9 +35,10 @@ const LogInForm = ({ fetchUserData, setNoti }: Props) => {
       <fieldset>
         <legend>Login</legend>
         <div>
-          <label htmlFor={'login-username'}>username</label>
+          <label htmlFor="login-username">username</label>
           <input
-            id={'login-username'}
+            id="login-username"
+            data-test="login-username"
             type="text"
             value={username}
             onChange={({ target }) => {
@@ -50,7 +51,8 @@ const LogInForm = ({ fetchUserData, setNoti }: Props) => {
         <div>
           <label htmlFor={'login-password'}>password</label>
           <input
-            id={'login-password'}
+            id="login-password"
+            data-test="login-password"
             type="password"
             value={password}
             onChange={({ target }) => {
@@ -60,7 +62,7 @@ const LogInForm = ({ fetchUserData, setNoti }: Props) => {
             minLength={6}
           />
         </div>
-        <button type="submit" id="login-button">
+        <button type="submit" id="login-button" data-test="login-button">
           login
         </button>
       </fieldset>
