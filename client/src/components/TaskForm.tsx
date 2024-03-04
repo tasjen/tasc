@@ -6,7 +6,7 @@ type Props = {
   projectId: string;
 };
 
-const TaskForm = ({ projectId }: Props) => {
+export default function TaskForm({ projectId }: Props) {
   const {
     nameInput,
     descriptionInput,
@@ -25,7 +25,7 @@ const TaskForm = ({ projectId }: Props) => {
 
   const { addTask, updateTask } = useTaskMutation();
 
-  const handleSubmit = async (event: React.SyntheticEvent) => {
+  async function handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     if (updatingTaskId !== null) {
       await updateTask({
@@ -46,15 +46,15 @@ const TaskForm = ({ projectId }: Props) => {
       });
     }
     hide();
-  };
+  }
 
-  const handlePriority = (event: React.ChangeEvent<HTMLInputElement>) => {
+  function handlePriority(event: React.ChangeEvent<HTMLInputElement>) {
     setPriorityInput(+event.target.value as 1 | 2 | 3);
-  };
+  }
 
-  const handleDueDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+  function handleDueDate(event: React.ChangeEvent<HTMLInputElement>) {
     setDueDateInput(event.target.value);
-  };
+  }
 
   return (
     <div id="task-adder">
@@ -137,6 +137,4 @@ const TaskForm = ({ projectId }: Props) => {
       )}
     </div>
   );
-};
-
-export default TaskForm;
+}

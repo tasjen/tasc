@@ -1,4 +1,4 @@
-const Footer = () => {
+export default function Footer() {
   return (
     <footer>
       <a href="https://github.com/tasjen/todo-list-fullstack">
@@ -6,6 +6,4 @@ const Footer = () => {
       </a>
     </footer>
   );
-};
-
-export default Footer;
+}

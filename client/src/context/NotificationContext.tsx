@@ -16,7 +16,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const isValidMessage = (message: unknown): message is NotificationMessage => {
+function isValidMessage(message: unknown): message is NotificationMessage {
   return (
     typeof message === 'string' ||
     message instanceof String ||
@@ -24,9 +24,9 @@ const isValidMessage = (message: unknown): message is NotificationMessage => {
     message instanceof Error ||
     isAxiosError(message)
   );
-};
+}
 
-export const NotificationContextProvider = (props: Props) => {
+export function NotificationContextProvider(props: Props) {
   const [notification, setNotification] = useState<NotificationMessage>(null);
   const showNoti = (message: unknown) => {
     if (isValidMessage(message)) {
@@ -39,6 +39,6 @@ export const NotificationContextProvider = (props: Props) => {
       {props.children}
     </NotificationContext.Provider>
   );
-};
+}
 
 export default NotificationContext;

@@ -7,23 +7,23 @@ type Props = {
   task: Omit<TaskJson, 'project'>;
 };
 
-const Task = ({ task }: Props) => {
+export default function Task({ task }: Props) {
   const [showDescription, setShowDescription] = useState(false);
 
   const { removeTask } = useTaskMutation();
   const taskForm = useContext(TaskFormContext);
 
-  const toggleDescription = () => {
+  function toggleDescription() {
     setShowDescription(!showDescription);
-  };
+  }
 
-  const toDateFormat = (date: Date): string => {
+  function toDateFormat(date: Date): string {
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
     });
-  };
+  }
 
   return (
     <li className="task">
@@ -57,6 +57,4 @@ const Task = ({ task }: Props) => {
       )}
     </li>
   );
-};
-
-export default Task;
+}

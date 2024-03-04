@@ -6,38 +6,38 @@ import taskService from '../services/task'
 import NotificationContext from "../context/NotificationContext";
 import { UserState } from "../types";
 
-export const useLocalStorage = <T>(key: string) => {
-  const getItem = (): T | null => {
+export function useLocalStorage<T>(key: string) {
+  function getItem(): T | null {
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : null;
   };
 
-  const setItem = (value: T): void => {
+  function setItem(value: T): void {
     localStorage.setItem(key, JSON.stringify(value));
   };
 
-  const removeItem = (): void => {
+  function removeItem(): void {
     localStorage.removeItem(key);
   };
 
   return { getItem, setItem, removeItem };
 };
 
-export const useInput = (type: HTMLInputTypeAttribute) => {
+export function useInput(type: HTMLInputTypeAttribute) {
   const [value, setValue] = useState('');
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+  function onChange(event: ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
   };
 
-  const onReset = () => {
+  function onReset() {
     setValue('');
   };
 
   return { type, value, onChange, onReset };
 };
 
-export const useUserDataQuery = (options = {}) => {
+export function useUserDataQuery(options = {}) {
   const {
     data: userData,
     isLoading,
@@ -55,7 +55,7 @@ export const useUserDataQuery = (options = {}) => {
   return { userData, isLoading, isError, error };
 };
 
-export const useProjectMutation = () => {
+export function useProjectMutation() {
   const queryClient = useQueryClient();
   const { showNoti } = useContext(NotificationContext);
 
@@ -107,7 +107,7 @@ export const useProjectMutation = () => {
   return { addProject, updateProject, removeProject };
 };
 
-export const useTaskMutation = () => {
+export function useTaskMutation() {
   const queryClient = useQueryClient();
   const { showNoti } = useContext(NotificationContext);
 

@@ -20,7 +20,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const ProjectFormContextProvider = (props: Props) => {
+export function ProjectFormContextProvider(props: Props) {
   const [nameInput, setNameInput] = useState('');
   const [isVisible, setIsvisible] = useState(false);
   const [updatingProjectId, setUpdatingProjectId] = useState<string | null>(
@@ -29,20 +29,20 @@ export const ProjectFormContextProvider = (props: Props) => {
 
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  const show = () => {
+  function show() {
     setIsvisible(true);
-  };
-  const hide = () => {
+  }
+  function hide() {
     setIsvisible(false);
     setUpdatingProjectId(null);
     setNameInput('');
-  };
+  }
 
-  const showEdit = (project: ProjectState) => {
+  function showEdit(project: ProjectState) {
     setNameInput(project.name);
     setUpdatingProjectId(project.id);
     setIsvisible(true);
-  };
+  }
 
   return (
     <ProjectFormContext.Provider
@@ -60,6 +60,6 @@ export const ProjectFormContextProvider = (props: Props) => {
       {props.children}
     </ProjectFormContext.Provider>
   );
-};
+}
 
 export default ProjectFormContext;

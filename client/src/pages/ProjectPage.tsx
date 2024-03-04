@@ -3,7 +3,7 @@ import { useUserDataQuery } from '../hooks';
 import Task from '../components/Task';
 import TaskForm from '../components/TaskForm';
 
-const ProjectPage = () => {
+export default function ProjectPage() {
   const { projectName } = useParams();
   const { userData } = useUserDataQuery();
 
@@ -15,12 +15,12 @@ const ProjectPage = () => {
 
   return (
     <>
-      <p id="tab-name">{project?.name}</p>
+      <p id="tab-name">{project.name}</p>
       <ul id="task-list">
-        {project?.tasks.length === 0 ? (
+        {project.tasks.length === 0 ? (
           <p>No tasks here.</p>
         ) : (
-          project?.tasks
+          project.tasks
             .sort(
               (a, b) =>
                 new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
@@ -31,6 +31,4 @@ const ProjectPage = () => {
       <TaskForm projectId={project.id} />
     </>
   );
-};
-
-export default ProjectPage;
+}

@@ -3,15 +3,15 @@ import { useLocalStorage } from '../hooks';
 import ProjectForm from '../components/ProjectForm';
 import ProjectList from '../components/ProjectList';
 
-export const loader = async () => {
+export async function loader() {
   const user = useLocalStorage('loggedUser').getItem();
 
   if (!user) return redirect('/login');
 
   return null;
-};
+}
 
-const Index = () => {
+export default function Index() {
   return (
     <main>
       <nav>
@@ -24,6 +24,4 @@ const Index = () => {
       </div>
     </main>
   );
-};
-
-export default Index;
+}

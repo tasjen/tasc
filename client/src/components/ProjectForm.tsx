@@ -3,7 +3,7 @@ import ProjectFormContext from '../context/ProjectFormContext';
 import { useProjectMutation } from '../hooks';
 import { useNavigate } from 'react-router-dom';
 
-const ProjectForm = () => {
+export default function ProjectForm() {
   const {
     nameInput,
     isVisible,
@@ -17,7 +17,7 @@ const ProjectForm = () => {
   const { addProject, updateProject } = useProjectMutation();
   const navigate = useNavigate();
 
-  const handleSubmit = async (event: React.SyntheticEvent) => {
+  async function handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
     if (updatingProjectId !== null) {
       await updateProject({ name: nameInput, id: updatingProjectId });
@@ -26,7 +26,7 @@ const ProjectForm = () => {
     }
     navigate(`/projects/${nameInput}`);
     hide();
-  };
+  }
 
   return (
     <div id="project-adder">
@@ -55,6 +55,4 @@ const ProjectForm = () => {
       )}
     </div>
   );
-};
-
-export default ProjectForm;
+}

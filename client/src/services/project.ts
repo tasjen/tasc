@@ -4,9 +4,7 @@ import { ProjectState } from '../types';
 
 const baseUrl = '/api/projects';
 
-const create = async (projectObject: {
-  name: string;
-}): Promise<ProjectState> => {
+async function create(projectObject: { name: string; }): Promise<ProjectState> {
   const res = await axios.post(
     baseUrl,
     projectObject,
@@ -16,12 +14,12 @@ const create = async (projectObject: {
   return res.data;
 };
 
-const remove = async (projectId: string) => {
+async function remove(projectId: string) {
   await axios.delete(`${baseUrl}/${projectId}`, getAuthHeader(getToken()));
   return projectId;
 };
 
-const update = async (projectObject: { name: string; id: string }) => {
+async function update(projectObject: { name: string; id: string }) {
   const res = await axios.put(
     `${baseUrl}/${projectObject.id}`,
     projectObject,

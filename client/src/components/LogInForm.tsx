@@ -4,14 +4,14 @@ import NotificationContext from '../context/NotificationContext';
 import { useInput, useLocalStorage } from '../hooks';
 import { useNavigate } from 'react-router-dom';
 
-const LogInForm = () => {
+export default function LogInForm() {
   const username = useInput('text');
   const password = useInput('password');
 
   const { showNoti } = useContext(NotificationContext);
   const navigate = useNavigate();
 
-  const handleLogIn = async (event: React.SyntheticEvent) => {
+  async function handleLogIn(event: React.SyntheticEvent) {
     event.preventDefault();
     try {
       const user = await loginService.login({
@@ -25,7 +25,7 @@ const LogInForm = () => {
     } catch (err: unknown) {
       showNoti(err);
     }
-  };
+  }
 
   return (
     <form id="login-form" onSubmit={handleLogIn}>
@@ -57,6 +57,4 @@ const LogInForm = () => {
       </fieldset>
     </form>
   );
-};
-
-export default LogInForm;
+}

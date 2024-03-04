@@ -1,15 +1,15 @@
-export const getAuthHeader = (token: string) => {
+export function getAuthHeader(token: string) {
   return {
     headers: { Authorization: `Bearer ${token}` },
   };
 };
 
-export const getToken = (): string => {
+export function getToken(): string {
   const loggedUser = JSON.parse(localStorage.getItem('loggedUser')!);
   return loggedUser.token;
 };
 
-export const getUserId = (): string => {
+export function getUserId(): string {
   const loggedUser = JSON.parse(localStorage.getItem('loggedUser')!);
   return loggedUser.username;
 };

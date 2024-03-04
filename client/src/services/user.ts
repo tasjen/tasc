@@ -4,7 +4,7 @@ import { getAuthHeader } from './util';
 
 const baseUrl = '/api/users';
 
-const getUserData = async (): Promise<UserState> => {
+async function getUserData(): Promise<UserState> {
   const loggedUser = JSON.parse(localStorage.getItem('loggedUser')!);
   const res = await axios.get(
     `${baseUrl}/${loggedUser.username}`,
@@ -13,13 +13,13 @@ const getUserData = async (): Promise<UserState> => {
   return res.data;
 };
 
-const register = async ({
+async function register({
   username,
   password,
 }: {
   username: string;
   password: string;
-}): Promise<void> => {
+}): Promise<void> {
   await axios.post(baseUrl, { username, password });
 };
 

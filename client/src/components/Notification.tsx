@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import NotificationContext from '../context/NotificationContext';
 import { isAxiosError } from 'axios';
 
-const Notification = () => {
+export default function Notification() {
   const { notification } = useContext(NotificationContext);
 
   return notification === null ? (
@@ -16,6 +16,4 @@ const Notification = () => {
   ) : (
     <p className="message">{notification}</p>
   );
-};
-
-export default Notification;
+}

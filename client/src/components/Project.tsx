@@ -9,7 +9,7 @@ type Props = {
   project: ProjectState;
 };
 
-const Project = ({ project }: Props) => {
+export default function Project({ project }: Props) {
   const projectForm = useContext(ProjectFormContext);
   const taskForm = useContext(TaskFormContext);
   const { removeProject } = useProjectMutation();
@@ -51,6 +51,4 @@ const Project = ({ project }: Props) => {
       )}
     </li>
   );
-};
-
-export default Project;
+}

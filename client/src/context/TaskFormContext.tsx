@@ -34,7 +34,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const TaskFormContextProvider = (props: Props) => {
+export function TaskFormContextProvider(props: Props) {
   const [nameInput, setNameInput] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
   const [dueDateInput, setDueDateInput] = useState('');
@@ -45,25 +45,25 @@ export const TaskFormContextProvider = (props: Props) => {
 
   const nameInputRef = useRef(null);
 
-  const show = () => {
+  function show() {
     setIsvisible(true);
-  };
-  const hide = () => {
+  }
+  function hide() {
     setIsvisible(false);
     setNameInput('');
     setDescriptionInput('');
     setDueDateInput('');
     setPriorityInput(1);
     setUpdatingTaskId(null);
-  };
-  const showEdit = (task: TaskObject) => {
+  }
+  function showEdit(task: TaskObject) {
     setNameInput(task.name);
     setDescriptionInput(task.description);
     setDueDateInput(format(task.due_date, 'yyyy-MM-dd'));
     setPriorityInput(task.priority);
     setUpdatingTaskId(task.id);
     setIsvisible(true);
-  };
+  }
 
   return (
     <TaskFormContext.Provider
@@ -87,6 +87,6 @@ export const TaskFormContextProvider = (props: Props) => {
       {props.children}
     </TaskFormContext.Provider>
   );
-};
+}
 
 export default TaskFormContext;

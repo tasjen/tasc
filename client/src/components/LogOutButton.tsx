@@ -4,12 +4,12 @@ import NotificationContext from '../context/NotificationContext';
 import { useLocalStorage } from '../hooks';
 import { useNavigate } from 'react-router-dom';
 
-const LogOutButton = () => {
+export default function LogOutButton() {
   const { showNoti } = useContext(NotificationContext);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const handleLogOut = () => {
+  function handleLogOut() {
     try {
       const loggedUser = useLocalStorage('loggedUser');
       loggedUser.removeItem();
@@ -18,13 +18,11 @@ const LogOutButton = () => {
     } catch (err) {
       showNoti(err);
     }
-  };
+  }
 
   return (
     <button id="logout-button" onClick={handleLogOut}>
       logout
     </button>
   );
-};
-
-export default LogOutButton;
+}

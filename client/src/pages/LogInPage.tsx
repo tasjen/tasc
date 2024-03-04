@@ -3,18 +3,16 @@ import { useLocalStorage } from '../hooks';
 import LogInForm from '../components/LogInForm';
 import RegisterForm from '../components/RegisterForm';
 
-export const loader = () => {
+export function loader() {
   const user = useLocalStorage('loggedUser').getItem();
   return user ? redirect('/projects/Default') : null;
-};
+}
 
-const LogInPage = () => {
+export default function functionLogInPage() {
   return (
     <main>
       <LogInForm />
       <RegisterForm />
     </main>
   );
-};
-
-export default LogInPage;
+}

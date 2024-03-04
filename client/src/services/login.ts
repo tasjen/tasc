@@ -11,7 +11,7 @@ export type LogInResponse = {
   username: string;
 };
 
-const login = async (credentials: Credentials): Promise<LogInResponse> => {
+async function login(credentials: Credentials): Promise<LogInResponse> {
   const response = await axios.post(baseUrl, credentials);
   return response.data;
 };

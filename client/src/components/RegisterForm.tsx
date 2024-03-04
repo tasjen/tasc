@@ -2,13 +2,13 @@ import { useContext, useState } from 'react';
 import userService from '../services/user';
 import NotificationContext from '../context/NotificationContext';
 
-const RegisterForm = () => {
+export default function RegisterForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const { showNoti } = useContext(NotificationContext);
 
-  const handleRegister = async (event: React.SyntheticEvent) => {
+  async function handleRegister(event: React.SyntheticEvent) {
     event.preventDefault();
     try {
       await userService.register({
@@ -22,7 +22,7 @@ const RegisterForm = () => {
     } catch (err: unknown) {
       showNoti(err);
     }
-  };
+  }
 
   return (
     <form id="register-form" onSubmit={handleRegister}>
@@ -60,6 +60,4 @@ const RegisterForm = () => {
       </fieldset>
     </form>
   );
-};
-
-export default RegisterForm;
+}

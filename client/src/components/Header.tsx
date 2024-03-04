@@ -2,7 +2,7 @@ import { useUserDataQuery } from '../hooks';
 import LogOutButton from './LogOutButton';
 import Notification from './Notification';
 
-const Header = () => {
+export default function Header() {
   const { userData } = useUserDataQuery({ retry: false });
 
   return (
@@ -17,6 +17,4 @@ const Header = () => {
       )}
     </header>
   );
-};
-
-export default Header;
+}
