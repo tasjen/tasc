@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { TaskJson } from '../types';
+import { useTaskMutation } from '../hooks';
+import TaskFormContext from '../context/TaskFormContext';
 
 type Props = {
   task: Omit<TaskJson, 'project'>;
-  removeTask: (taskId: string) => void;
-  setTaskFormEdit: (taskObject: Omit<TaskJson, 'project'>) => void;
 };
 
-const Task = ({ task, removeTask, setTaskFormEdit }: Props) => {
+const Task = ({ task }: Props) => {
   const [showDescription, setShowDescription] = useState(false);
+
+  const { removeTask } = useTaskMutation();
+  const taskForm = useContext(TaskFormContext);
 
   const toggleDescription = () => {
     setShowDescription(!showDescription);
@@ -31,7 +34,13 @@ const Task = ({ task, removeTask, setTaskFormEdit }: Props) => {
           {'description'}
         </p>
         <p className="due-date">{toDateFormat(new Date(task.due_date))}</p>
-        <p className="edit button" onClick={() => setTaskFormEdit(task)}>
+        <p
+          className="edit button"
+          onClick={() => {
+            taskForm.showEdit(task);
+            taskForm.nameInputRef.current?.focus();
+          }}
+        >
           📝
         </p>
         <p

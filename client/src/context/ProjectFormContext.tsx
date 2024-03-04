@@ -1,4 +1,5 @@
-import { createContext, useState } from 'react';
+import { createContext, useRef, useState } from 'react';
+import { ProjectState } from '../types';
 
 type ProjectFormContextType = {
   nameInput: string;
@@ -7,7 +8,8 @@ type ProjectFormContextType = {
   show: () => void;
   hide: () => void;
   setNameInput: (value: string) => void;
-  setUpdatingProjectId: (id: string | null) => void;
+  showEdit: (project: ProjectState) => void;
+  nameInputRef: React.RefObject<HTMLInputElement>;
 };
 
 const ProjectFormContext = createContext<ProjectFormContextType>(
@@ -25,12 +27,21 @@ export const ProjectFormContextProvider = (props: Props) => {
     null,
   );
 
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
   const show = () => {
     setIsvisible(true);
   };
   const hide = () => {
     setIsvisible(false);
     setUpdatingProjectId(null);
+    setNameInput('');
+  };
+
+  const showEdit = (project: ProjectState) => {
+    setNameInput(project.name);
+    setUpdatingProjectId(project.id);
+    setIsvisible(true);
   };
 
   return (
@@ -42,7 +53,8 @@ export const ProjectFormContextProvider = (props: Props) => {
         show,
         hide,
         setNameInput,
-        setUpdatingProjectId,
+        showEdit,
+        nameInputRef,
       }}
     >
       {props.children}

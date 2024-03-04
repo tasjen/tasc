@@ -1,33 +1,30 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import loginService from '../services/login';
-import { handleError } from '../services/util';
+import NotificationContext from '../context/NotificationContext';
+import { useInput, useLocalStorage } from '../hooks';
+import { useNavigate } from 'react-router-dom';
 
-type Props = {
-  fetchUserData: () => Promise<void>;
-  setNoti: ({ text, error }: { text: string; error: boolean }) => void;
-};
+const LogInForm = () => {
+  const username = useInput('text');
+  const password = useInput('password');
 
-const LogInForm = ({ fetchUserData, setNoti }: Props) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const { showNoti } = useContext(NotificationContext);
+  const navigate = useNavigate();
 
   const handleLogIn = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     try {
-      const userToken = await loginService.login({
-        username,
-        password,
+      const user = await loginService.login({
+        username: username.value,
+        password: password.value,
       });
-      setUsername('');
-      setPassword('');
-      localStorage.setItem('loggedUser', JSON.stringify(userToken));
-      await fetchUserData();
+      username.onReset();
+      password.onReset();
+      useLocalStorage('loggedUser').setItem(user);
+      navigate('/login');
     } catch (err: unknown) {
-      handleError(err, setNoti);
+      showNoti(err);
     }
-    setTimeout(() => {
-      setNoti({ text: '', error: false });
-    }, 5000);
   };
 
   return (
@@ -39,11 +36,7 @@ const LogInForm = ({ fetchUserData, setNoti }: Props) => {
           <input
             id="login-username"
             data-test="login-username"
-            type="text"
-            value={username}
-            onChange={({ target }) => {
-              setUsername(target.value);
-            }}
+            {...username}
             required
             minLength={6}
           />
@@ -53,11 +46,7 @@ const LogInForm = ({ fetchUserData, setNoti }: Props) => {
           <input
             id="login-password"
             data-test="login-password"
-            type="password"
-            value={password}
-            onChange={({ target }) => {
-              setPassword(target.value);
-            }}
+            {...password}
             required
             minLength={6}
           />

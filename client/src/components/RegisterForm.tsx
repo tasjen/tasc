@@ -1,14 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import userService from '../services/user';
-import { handleError } from '../services/util';
+import NotificationContext from '../context/NotificationContext';
 
-type Props = {
-  setNoti: ({ text, error }: { text: string; error: boolean }) => void;
-};
-
-const RegisterForm = ({ setNoti }: Props) => {
+const RegisterForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const { showNoti } = useContext(NotificationContext);
 
   const handleRegister = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -20,16 +18,10 @@ const RegisterForm = ({ setNoti }: Props) => {
       console.log(`username: ${username} password: ${password} is registered`);
       setUsername('');
       setPassword('');
-      setNoti({
-        text: `username: ${username} password: ${password} is registered`,
-        error: false,
-      });
+      showNoti(`username: ${username} password: ${password} is registered`);
     } catch (err: unknown) {
-      handleError(err, setNoti);
+      showNoti(err);
     }
-    setTimeout(() => {
-      setNoti({ text: '', error: false });
-    }, 5000);
   };
 
   return (

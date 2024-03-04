@@ -1,14 +1,12 @@
 import { useContext } from 'react';
-import { NewTask, TaskJson } from '../types';
 import TaskFormContext from '../context/TaskFormContext';
+import { useTaskMutation } from '../hooks';
 
 type Props = {
-  addTask: (taskObject: NewTask) => Promise<void>;
-  project: string;
-  updateTask: (taskObject: TaskJson) => Promise<void>;
+  projectId: string;
 };
 
-const TaskForm = ({ addTask, updateTask, project }: Props) => {
+const TaskForm = ({ projectId }: Props) => {
   const {
     nameInput,
     descriptionInput,
@@ -22,7 +20,10 @@ const TaskForm = ({ addTask, updateTask, project }: Props) => {
     setDescriptionInput,
     setDueDateInput,
     setPriorityInput,
+    nameInputRef,
   } = useContext(TaskFormContext);
+
+  const { addTask, updateTask } = useTaskMutation();
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -32,7 +33,7 @@ const TaskForm = ({ addTask, updateTask, project }: Props) => {
         description: descriptionInput,
         due_date: dueDateInput,
         priority: priorityInput,
-        project,
+        project: projectId,
         id: updatingTaskId,
       });
     } else {
@@ -41,7 +42,7 @@ const TaskForm = ({ addTask, updateTask, project }: Props) => {
         description: descriptionInput,
         due_date: new Date(dueDateInput),
         priority: priorityInput,
-        project,
+        project: projectId,
       });
     }
     hide();
@@ -56,7 +57,7 @@ const TaskForm = ({ addTask, updateTask, project }: Props) => {
   };
 
   return (
-    <div>
+    <div id="task-adder">
       {isVisible ? (
         <form id="task-form" onSubmit={handleSubmit}>
           <div id="name-input-container">
@@ -68,6 +69,8 @@ const TaskForm = ({ addTask, updateTask, project }: Props) => {
               value={nameInput}
               onChange={({ target }) => setNameInput(target.value)}
               required
+              autoFocus
+              ref={nameInputRef}
             ></input>
           </div>
           <div id="description-input-container">

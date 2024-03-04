@@ -1,14 +1,21 @@
 import { useContext } from 'react';
 import ProjectFormContext from '../context/ProjectFormContext';
+import { useProjectMutation } from '../hooks';
+import { useNavigate } from 'react-router-dom';
 
-type Props = {
-  addProject: (projectObject: { name: string }) => Promise<void>;
-  updateProject: (projectObject: { name: string; id: string }) => Promise<void>;
-};
+const ProjectForm = () => {
+  const {
+    nameInput,
+    isVisible,
+    updatingProjectId,
+    show,
+    hide,
+    setNameInput,
+    nameInputRef,
+  } = useContext(ProjectFormContext);
 
-const ProjectForm = ({ addProject, updateProject }: Props) => {
-  const { nameInput, isVisible, updatingProjectId, show, hide, setNameInput } =
-    useContext(ProjectFormContext);
+  const { addProject, updateProject } = useProjectMutation();
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -17,12 +24,12 @@ const ProjectForm = ({ addProject, updateProject }: Props) => {
     } else {
       await addProject({ name: nameInput });
     }
-    setNameInput('');
+    navigate(`/projects/${nameInput}`);
     hide();
   };
 
   return (
-    <div>
+    <div id="project-adder">
       {isVisible ? (
         <form id="project-form" onSubmit={handleSubmit}>
           <input
@@ -34,17 +41,12 @@ const ProjectForm = ({ addProject, updateProject }: Props) => {
             value={nameInput}
             autoFocus
             onChange={({ target }) => setNameInput(target.value)}
+            ref={nameInputRef}
           />
           <button data-test="add-project-button" type="submit">
             {updatingProjectId !== null ? 'Update' : 'Add'}
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              setNameInput('');
-              hide();
-            }}
-          >
+          <button type="button" onClick={hide}>
             Cancel
           </button>
         </form>

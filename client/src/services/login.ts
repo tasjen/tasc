@@ -6,7 +6,7 @@ type Credentials = {
   password: string;
 };
 
-type LogInResponse = {
+export type LogInResponse = {
   token: string;
   username: string;
 };
