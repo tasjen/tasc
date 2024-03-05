@@ -4,8 +4,8 @@ import { useInput, useLocalStorage } from '../hooks';
 import { useNavigate } from 'react-router-dom';
 
 export default function LogInForm() {
-  const username = useInput('text');
-  const password = useInput('password');
+  const [usernameInput, setUsernameInput] = useInput('text');
+  const [passwordInput, setPasswordInput] = useInput('password');
 
   const { showNoti } = useNotificationContext();
   const navigate = useNavigate();
@@ -14,11 +14,11 @@ export default function LogInForm() {
     event.preventDefault();
     try {
       const user = await loginService.login({
-        username: username.value,
-        password: password.value,
+        username: usernameInput.value,
+        password: passwordInput.value,
       });
-      username.onReset();
-      password.onReset();
+      setUsernameInput('');
+      setPasswordInput('');
       useLocalStorage('loggedUser').setItem(user);
       navigate('/login');
     } catch (err: unknown) {
@@ -35,7 +35,7 @@ export default function LogInForm() {
           <input
             id="login-username"
             data-test="login-username"
-            {...username}
+            {...usernameInput}
             required
             minLength={6}
           />
@@ -45,7 +45,7 @@ export default function LogInForm() {
           <input
             id="login-password"
             data-test="login-password"
-            {...password}
+            {...passwordInput}
             required
             minLength={6}
           />
