@@ -10,11 +10,13 @@ type TaskObject = {
   id: string;
 };
 
+type InputAttributes = ReturnType<typeof useInput>[0];
+
 type TaskFormContextType = {
-  nameInput: ReturnType<typeof useInput>[0];
-  descriptionInput: ReturnType<typeof useInput>[0];
-  dueDateInput: ReturnType<typeof useInput>[0];
-  priorityInput: ReturnType<typeof useInput>[0];
+  nameInput: InputAttributes;
+  descriptionInput: InputAttributes;
+  dueDateInput: InputAttributes;
+  priorityInput: InputAttributes;
   isVisible: boolean;
   editingTaskId: string | null;
   show: () => void;

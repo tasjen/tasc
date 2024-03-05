@@ -2,8 +2,10 @@ import { createContext, useState } from 'react';
 import { ProjectState } from '../types';
 import { useInput } from '../hooks';
 
+type InputAttributes = ReturnType<typeof useInput>[0];
+
 type ProjectFormContextType = {
-  nameInput: ReturnType<typeof useInput>[0];
+  nameInput: InputAttributes;
   isVisible: boolean;
   editingProjectId: string | null;
   show: () => void;
