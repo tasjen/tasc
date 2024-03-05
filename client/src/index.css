@@ -48,15 +48,22 @@ header {
     padding-top: 1rem;
     padding-left: 1rem;
     margin-right: auto;
+    &:not(:has(~ #username)) {
+      margin-right: 0;
+    }
   }
   & > .message {
     color: green;
     align-self: center;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   & > .error {
     color: red;
     align-self: center;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   & > #username {
