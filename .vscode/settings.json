@@ -3,5 +3,7 @@
     "./server",
     "./client"
   ],
-  "javascript.suggestionActions.enabled": false
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "javascript.suggestionActions.enabled": false,
 }
