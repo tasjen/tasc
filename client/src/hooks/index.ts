@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChangeEvent, HTMLInputTypeAttribute, useRef, useState } from "react";
+import { ChangeEvent, HTMLInputTypeAttribute, useState } from "react";
 import userService from '../services/user';
 import projectService from '../services/project'
 import taskService from '../services/task'
@@ -23,23 +23,23 @@ export function useLocalStorage<T>(key: string) {
   return { getItem, setItem, removeItem };
 };
 
-export function useInput(type: HTMLInputTypeAttribute): [
+export type UseInputReturnType = [
   {
     type: string,
     value: string,
-    ref: React.RefObject<HTMLInputElement>,
-    onChange: (event: ChangeEvent<HTMLInputElement>) => void
+    onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   },
   setValue: React.Dispatch<React.SetStateAction<string>>
-] {
-  const [value, setValue] = useState('');
-  const ref = useRef<HTMLInputElement>(null);
+]
 
-  function onChange(event: ChangeEvent<HTMLInputElement>) {
+export function useInput(type: HTMLInputTypeAttribute): UseInputReturnType {
+  const [value, setValue] = useState('');
+
+  function onChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setValue(event.target.value);
   };
 
-  return [{ type, value, ref, onChange }, setValue];
+  return [{ type, value, onChange }, setValue];
 };
 
 export function useUserDataQuery(options = {}) {

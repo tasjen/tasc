@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
-import { createContext, useContext, useState } from 'react';
-import { useInput } from '../hooks';
+import { createContext, useContext, useRef, useState } from 'react';
+import { UseInputReturnType, useInput } from '../hooks';
 
 type TaskObject = {
   name: string;
@@ -10,10 +10,11 @@ type TaskObject = {
   id: string;
 };
 
-type InputAttributes = ReturnType<typeof useInput>[0];
+type InputAttributes = UseInputReturnType[0];
 
 type TaskFormContextType = {
   nameInput: InputAttributes;
+  nameInputRef: React.RefObject<HTMLInputElement>;
   descriptionInput: InputAttributes;
   dueDateInput: InputAttributes;
   priorityInput: InputAttributes;
@@ -49,8 +50,11 @@ export default function TaskFormContextProvider(props: Props) {
   const [isVisible, setIsvisible] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
 
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
   function show() {
     setIsvisible(true);
+    nameInputRef.current?.focus();
   }
   function hide() {
     setIsvisible(false);
@@ -67,12 +71,14 @@ export default function TaskFormContextProvider(props: Props) {
     setPriorityInput(task.priority.toString());
     setEditingTaskId(task.id);
     setIsvisible(true);
+    nameInputRef.current?.focus();
   }
 
   return (
     <TaskFormContext.Provider
       value={{
         nameInput,
+        nameInputRef,
         descriptionInput,
         dueDateInput,
         priorityInput,

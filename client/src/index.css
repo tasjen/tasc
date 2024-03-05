@@ -41,24 +41,28 @@ a {
 header {
   grid-area: header;
   display: flex;
+
   & > #logo {
     font-size: 48px;
     font-weight: bold;
     padding-top: 1rem;
     padding-left: 1rem;
+    margin-right: auto;
   }
-  & > #noti {
+  & > .message {
     color: green;
     align-self: center;
-    margin-left: auto;
-    margin-right: auto;
-    &.error {
-      color: red;
-    }
   }
+
+  & > .error {
+    color: red;
+    align-self: center;
+  }
+
   & > #username {
     align-self: center;
     margin-right: 1rem;
+    margin-left: auto;
   }
   & > #logout-button {
     height: 50%;
@@ -284,10 +288,7 @@ form textarea {
 
 textarea {
   height: 100px;
-  min-height: 50px;
-  max-height: 100px;
-  min-width: 520px;
-  max-width: 100%;
+  resize: none;
 }
 
 footer {

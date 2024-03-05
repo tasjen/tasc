@@ -8,6 +8,7 @@ type Props = {
 export default function TaskForm({ projectId }: Props) {
   const {
     nameInput,
+    nameInputRef,
     descriptionInput,
     dueDateInput,
     priorityInput,
@@ -53,16 +54,17 @@ export default function TaskForm({ projectId }: Props) {
               placeholder="Task name"
               required
               autoFocus
+              ref={nameInputRef}
               {...nameInput}
             ></input>
           </div>
           <div id="description-input-container">
             <label htmlFor="description-input">Task description</label>
-            <input
+            <textarea
               id="description-input"
               placeholder="Task description"
               {...descriptionInput}
-            ></input>
+            ></textarea>
           </div>
           <div id="date-input-container">
             <label htmlFor="date-input">Due date</label>

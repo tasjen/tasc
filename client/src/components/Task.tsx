@@ -42,7 +42,6 @@ export default function Task({ task }: Props) {
           onClick={() => {
             projectForm.hide();
             taskForm.showEdit(task);
-            taskForm.nameInput.ref.current?.focus();
           }}
         >
           📝

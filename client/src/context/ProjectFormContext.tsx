@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useRef, useState } from 'react';
 import { ProjectState } from '../types';
 import { useInput } from '../hooks';
 
@@ -6,6 +6,7 @@ type InputAttributes = ReturnType<typeof useInput>[0];
 
 type ProjectFormContextType = {
   nameInput: InputAttributes;
+  nameInputRef: React.RefObject<HTMLInputElement>;
   isVisible: boolean;
   editingProjectId: string | null;
   show: () => void;
@@ -34,8 +35,11 @@ export default function ProjectFormContextProvider(props: Props) {
   const [isVisible, setIsvisible] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
 
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
   function show() {
     setIsvisible(true);
+    nameInputRef.current?.focus();
   }
   function hide() {
     setIsvisible(false);
@@ -47,12 +51,14 @@ export default function ProjectFormContextProvider(props: Props) {
     setNameInput(project.name);
     setEditingProjectId(project.id);
     setIsvisible(true);
+    nameInputRef.current?.focus();
   }
 
   return (
     <ProjectFormContext.Provider
       value={{
         nameInput,
+        nameInputRef,
         isVisible,
         editingProjectId,
         show,

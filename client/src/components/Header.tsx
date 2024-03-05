@@ -11,7 +11,7 @@ export default function Header() {
       <Notification />
       {userData && (
         <>
-          <b id="username">{userData.username}</b>
+          <p id="username">{userData.username}</p>
           <LogOutButton />
         </>
       )}

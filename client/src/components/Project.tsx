@@ -17,13 +17,14 @@ export default function Project({ project }: Props) {
   return (
     <li className="project">
       <NavLink
+        className="project-name"
         to={`/projects/${project.name}`}
         onClick={() => {
           projectForm.hide();
           taskForm.hide();
         }}
       >
-        <p className="project-name">{project.name}</p>
+        {project.name}
       </NavLink>
       {project.name !== 'Default' && (
         <div>
@@ -33,7 +34,6 @@ export default function Project({ project }: Props) {
               navigate(`/projects/${project.name}`);
               taskForm.hide();
               projectForm.showEdit(project);
-              projectForm.nameInput.ref.current?.focus();
             }}
           >
             📝

@@ -4,7 +4,7 @@ import { useTaskFormContext } from '../context/TaskFormContext';
 import { useProjectFormContext } from '../context/ProjectFormContext';
 
 export default function ProjectForm() {
-  const { nameInput, isVisible, editingProjectId, show, hide } =
+  const { nameInput, nameInputRef, isVisible, editingProjectId, show, hide } =
     useProjectFormContext();
 
   const taskForm = useTaskFormContext();
@@ -34,6 +34,7 @@ export default function ProjectForm() {
             placeholder="Project name"
             required
             autoFocus
+            ref={nameInputRef}
             {...nameInput}
           />
           <button data-test="add-project-button" type="submit">
