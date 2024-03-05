@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import ProjectFormContext from '../context/ProjectFormContext';
 import { useProjectMutation } from '../hooks';
 import { useNavigate } from 'react-router-dom';
+import TaskFormContext from '../context/TaskFormContext';
 
 export default function ProjectForm() {
   const {
@@ -13,6 +14,8 @@ export default function ProjectForm() {
     setNameInput,
     nameInputRef,
   } = useContext(ProjectFormContext);
+
+  const taskForm = useContext(TaskFormContext);
 
   const { addProject, updateProject } = useProjectMutation();
   const navigate = useNavigate();
@@ -26,6 +29,7 @@ export default function ProjectForm() {
     }
     navigate(`/projects/${nameInput}`);
     hide();
+    taskForm.hide();
   }
 
   return (
