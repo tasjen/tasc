@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChangeEvent, HTMLInputTypeAttribute, useContext, useState } from "react";
+import { ChangeEvent, HTMLInputTypeAttribute, useContext, useRef, useState } from "react";
 import userService from '../services/user';
 import projectService from '../services/project'
 import taskService from '../services/task'
@@ -23,18 +23,23 @@ export function useLocalStorage<T>(key: string) {
   return { getItem, setItem, removeItem };
 };
 
-export function useInput(type: HTMLInputTypeAttribute) {
+export function useInput(type: HTMLInputTypeAttribute): [
+  {
+    type: string,
+    value: string,
+    ref: React.RefObject<HTMLInputElement>,
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  },
+  setValue: React.Dispatch<React.SetStateAction<string>>
+] {
   const [value, setValue] = useState('');
+  const ref = useRef<HTMLInputElement>(null);
 
   function onChange(event: ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value);
   };
 
-  function onReset() {
-    setValue('');
-  };
-
-  return { type, value, onChange, onReset };
+  return [{ type, value, ref, onChange }, setValue];
 };
 
 export function useUserDataQuery(options = {}) {
@@ -81,7 +86,7 @@ export function useProjectMutation() {
         queryClient.setQueryData(['userData'], {
           ...userData,
           projects: userData.projects.map((p) =>
-            p.id !== updatedProject.id ? p : updatedProject,
+            p.id !== updatedProject.id ? p : { ...p, name: updatedProject.name },
           ),
         });
       }

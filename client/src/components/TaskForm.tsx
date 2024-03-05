@@ -13,47 +13,34 @@ export default function TaskForm({ projectId }: Props) {
     dueDateInput,
     priorityInput,
     isVisible,
-    updatingTaskId,
+    editingTaskId,
     show,
     hide,
-    setNameInput,
-    setDescriptionInput,
-    setDueDateInput,
-    setPriorityInput,
-    nameInputRef,
   } = useContext(TaskFormContext);
 
   const { addTask, updateTask } = useTaskMutation();
 
   async function handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    if (updatingTaskId !== null) {
+    if (editingTaskId !== null) {
       await updateTask({
-        name: nameInput,
-        description: descriptionInput,
-        due_date: dueDateInput,
-        priority: priorityInput,
+        name: nameInput.value,
+        description: descriptionInput.value,
+        due_date: dueDateInput.value,
+        priority: +priorityInput.value,
         project: projectId,
-        id: updatingTaskId,
+        id: editingTaskId,
       });
     } else {
       await addTask({
-        name: nameInput,
-        description: descriptionInput,
-        due_date: new Date(dueDateInput),
-        priority: priorityInput,
+        name: nameInput.value,
+        description: descriptionInput.value,
+        due_date: new Date(dueDateInput.value),
+        priority: +priorityInput.value,
         project: projectId,
       });
     }
     hide();
-  }
-
-  function handlePriority(event: React.ChangeEvent<HTMLInputElement>) {
-    setPriorityInput(+event.target.value as 1 | 2 | 3);
-  }
-
-  function handleDueDate(event: React.ChangeEvent<HTMLInputElement>) {
-    setDueDateInput(event.target.value);
   }
 
   return (
@@ -63,45 +50,35 @@ export default function TaskForm({ projectId }: Props) {
           <div id="name-input-container">
             <label htmlFor="name-input">Task name</label>
             <input
-              type="text"
               id="name-input"
               placeholder="Task name"
-              value={nameInput}
-              onChange={({ target }) => setNameInput(target.value)}
               required
               autoFocus
-              ref={nameInputRef}
+              {...nameInput}
             ></input>
           </div>
           <div id="description-input-container">
             <label htmlFor="description-input">Task description</label>
-            <textarea
+            <input
               id="description-input"
               placeholder="Task description"
-              value={descriptionInput}
-              onChange={({ target }) => setDescriptionInput(target.value)}
-            ></textarea>
+              {...descriptionInput}
+            ></input>
           </div>
           <div id="date-input-container">
             <label htmlFor="date-input">Due date</label>
-            <input
-              type="date"
-              id="date-input"
-              value={dueDateInput}
-              onChange={handleDueDate}
-              required
-            />
+            <input id="date-input" required {...dueDateInput} />
           </div>
           <div id="priority-input-container">
             <label>Priority</label>
             <div>
               <input
-                type="radio"
                 id="low"
+                type="radio"
                 name="priority"
                 value="1"
-                checked={priorityInput === 1}
-                onChange={handlePriority}
+                checked={priorityInput.value === '1'}
+                onChange={priorityInput.onChange}
                 required
               />
               <label htmlFor="low">Low</label>{' '}
@@ -110,8 +87,8 @@ export default function TaskForm({ projectId }: Props) {
                 id="medium"
                 name="priority"
                 value="2"
-                checked={priorityInput === 2}
-                onChange={handlePriority}
+                checked={priorityInput.value === '2'}
+                onChange={priorityInput.onChange}
               />
               <label htmlFor="medium">Medium</label>{' '}
               <input
@@ -119,14 +96,14 @@ export default function TaskForm({ projectId }: Props) {
                 id="high"
                 name="priority"
                 value="3"
-                checked={priorityInput === 3}
-                onChange={handlePriority}
+                checked={priorityInput.value === '3'}
+                onChange={priorityInput.onChange}
               />
               <label htmlFor="high">High</label>
             </div>
           </div>
           <button type="submit">
-            {updatingTaskId == null ? 'Add' : 'Update'}
+            {editingTaskId == null ? 'Add' : 'Update'}
           </button>
           <button type="button" onClick={hide}>
             Cancel

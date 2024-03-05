@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { TaskJson } from '../types';
 import { useTaskMutation } from '../hooks';
 import TaskFormContext from '../context/TaskFormContext';
+import ProjectFormContext from '../context/ProjectFormContext';
 
 type Props = {
   task: Omit<TaskJson, 'project'>;
@@ -11,6 +12,8 @@ export default function Task({ task }: Props) {
   const [showDescription, setShowDescription] = useState(false);
 
   const { removeTask } = useTaskMutation();
+
+  const projectForm = useContext(ProjectFormContext);
   const taskForm = useContext(TaskFormContext);
 
   function toggleDescription() {
@@ -37,8 +40,9 @@ export default function Task({ task }: Props) {
         <p
           className="edit button"
           onClick={() => {
+            projectForm.hide();
             taskForm.showEdit(task);
-            taskForm.nameInputRef.current?.focus();
+            taskForm.nameInput.ref.current?.focus();
           }}
         >
           📝

@@ -16,7 +16,7 @@ export default function Project({ project }: Props) {
   const navigate = useNavigate();
 
   return (
-    <li key={project.id} className="project">
+    <li className="project">
       <NavLink
         to={`/projects/${project.name}`}
         onClick={() => {
@@ -32,8 +32,9 @@ export default function Project({ project }: Props) {
             className="edit button"
             onClick={() => {
               navigate(`/projects/${project.name}`);
+              taskForm.hide();
               projectForm.showEdit(project);
-              projectForm.nameInputRef.current?.focus();
+              projectForm.nameInput.ref.current?.focus();
             }}
           >
             📝

@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
-import { createContext, useRef, useState } from 'react';
+import { createContext, useState } from 'react';
+import { useInput } from '../hooks';
 
 type TaskObject = {
   name: string;
@@ -10,20 +11,15 @@ type TaskObject = {
 };
 
 type TaskFormContextType = {
-  nameInput: TaskObject['name'];
-  descriptionInput: TaskObject['description'];
-  dueDateInput: TaskObject['due_date'];
-  priorityInput: TaskObject['priority'];
+  nameInput: ReturnType<typeof useInput>[0];
+  descriptionInput: ReturnType<typeof useInput>[0];
+  dueDateInput: ReturnType<typeof useInput>[0];
+  priorityInput: ReturnType<typeof useInput>[0];
   isVisible: boolean;
-  updatingTaskId: string | null;
+  editingTaskId: string | null;
   show: () => void;
   hide: () => void;
-  setNameInput: (value: string) => void;
-  setDescriptionInput: (value: string) => void;
-  setDueDateInput: (value: string) => void;
-  setPriorityInput: (value: TaskObject['priority']) => void;
   showEdit: (taskObject: TaskObject) => void;
-  nameInputRef: React.RefObject<HTMLInputElement>;
 };
 
 const TaskFormContext = createContext<TaskFormContextType>(
@@ -35,15 +31,13 @@ type Props = {
 };
 
 export function TaskFormContextProvider(props: Props) {
-  const [nameInput, setNameInput] = useState('');
-  const [descriptionInput, setDescriptionInput] = useState('');
-  const [dueDateInput, setDueDateInput] = useState('');
-  const [priorityInput, setPriorityInput] = useState<TaskObject['priority']>(1);
+  const [nameInput, setNameInput] = useInput('text');
+  const [descriptionInput, setDescriptionInput] = useInput('text');
+  const [dueDateInput, setDueDateInput] = useInput('date');
+  const [priorityInput, setPriorityInput] = useInput('radio');
 
   const [isVisible, setIsvisible] = useState(false);
-  const [updatingTaskId, setUpdatingTaskId] = useState<string | null>(null);
-
-  const nameInputRef = useRef(null);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
 
   function show() {
     setIsvisible(true);
@@ -53,15 +47,15 @@ export function TaskFormContextProvider(props: Props) {
     setNameInput('');
     setDescriptionInput('');
     setDueDateInput('');
-    setPriorityInput(1);
-    setUpdatingTaskId(null);
+    setPriorityInput('1');
+    setEditingTaskId(null);
   }
   function showEdit(task: TaskObject) {
     setNameInput(task.name);
     setDescriptionInput(task.description);
     setDueDateInput(format(task.due_date, 'yyyy-MM-dd'));
-    setPriorityInput(task.priority);
-    setUpdatingTaskId(task.id);
+    setPriorityInput(task.priority.toString());
+    setEditingTaskId(task.id);
     setIsvisible(true);
   }
 
@@ -73,15 +67,10 @@ export function TaskFormContextProvider(props: Props) {
         dueDateInput,
         priorityInput,
         isVisible,
-        updatingTaskId,
+        editingTaskId,
         show,
         hide,
-        setNameInput,
-        setDescriptionInput,
-        setDueDateInput,
-        setPriorityInput,
         showEdit,
-        nameInputRef,
       }}
     >
       {props.children}

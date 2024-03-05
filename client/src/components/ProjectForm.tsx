@@ -5,15 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import TaskFormContext from '../context/TaskFormContext';
 
 export default function ProjectForm() {
-  const {
-    nameInput,
-    isVisible,
-    updatingProjectId,
-    show,
-    hide,
-    setNameInput,
-    nameInputRef,
-  } = useContext(ProjectFormContext);
+  const { nameInput, isVisible, editingProjectId, show, hide } =
+    useContext(ProjectFormContext);
 
   const taskForm = useContext(TaskFormContext);
 
@@ -22,14 +15,14 @@ export default function ProjectForm() {
 
   async function handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    if (updatingProjectId !== null) {
-      await updateProject({ name: nameInput, id: updatingProjectId });
+    if (editingProjectId !== null) {
+      await updateProject({ name: nameInput.value, id: editingProjectId });
     } else {
-      await addProject({ name: nameInput });
+      await addProject({ name: nameInput.value });
     }
-    navigate(`/projects/${nameInput}`);
-    hide();
+    hide(); //hide project form
     taskForm.hide();
+    navigate(`/projects/${nameInput.value}`);
   }
 
   return (
@@ -41,14 +34,11 @@ export default function ProjectForm() {
             data-test="project-name-input"
             placeholder="Project name"
             required
-            type="text"
-            value={nameInput}
             autoFocus
-            onChange={({ target }) => setNameInput(target.value)}
-            ref={nameInputRef}
+            {...nameInput}
           />
           <button data-test="add-project-button" type="submit">
-            {updatingProjectId !== null ? 'Update' : 'Add'}
+            {editingProjectId !== null ? 'Update' : 'Add'}
           </button>
           <button type="button" onClick={hide}>
             Cancel
