@@ -45,6 +45,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </TaskFormContextProvider>
       </ProjectFormContextProvider>
     </NotificationContextProvider>
-    ,
   </QueryClientProvider>,
 );
