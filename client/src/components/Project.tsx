@@ -42,6 +42,8 @@ export default function Project({ project }: Props) {
             className="remove button"
             onClick={() => {
               removeProject(project.id);
+              projectForm.hide();
+              taskForm.hide();
               navigate('/projects/Default');
             }}
           >
