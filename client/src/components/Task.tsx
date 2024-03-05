@@ -47,6 +47,7 @@ export default function Task({ task }: Props) {
           className="remove button"
           onClick={() => {
             removeTask(task.id);
+            taskForm.hide();
           }}
         >
           ❌
