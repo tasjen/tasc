@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function Task({ task }: Props) {
-  const [showDescription, setShowDescription] = useState(false);
+  const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
 
   const { removeTask } = useTaskMutation();
 
@@ -17,7 +17,7 @@ export default function Task({ task }: Props) {
   const taskForm = useTaskFormContext();
 
   function toggleDescription() {
-    setShowDescription(!showDescription);
+    setIsDescriptionVisible(!isDescriptionVisible);
   }
 
   function toDateFormat(date: Date): string {
@@ -56,7 +56,7 @@ export default function Task({ task }: Props) {
           ❌
         </p>
       </div>
-      {showDescription && (
+      {isDescriptionVisible && (
         <p className="task-description">{task.description}</p>
       )}
     </li>
