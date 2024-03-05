@@ -1,17 +1,16 @@
-import { useContext } from 'react';
-import ProjectFormContext from '../context/ProjectFormContext';
+import { useProjectFormContext } from '../context/ProjectFormContext';
 import { ProjectState } from '../types';
 import { useProjectMutation } from '../hooks';
 import { NavLink, useNavigate } from 'react-router-dom';
-import TaskFormContext from '../context/TaskFormContext';
+import { useTaskFormContext } from '../context/TaskFormContext';
 
 type Props = {
   project: ProjectState;
 };
 
 export default function Project({ project }: Props) {
-  const projectForm = useContext(ProjectFormContext);
-  const taskForm = useContext(TaskFormContext);
+  const projectForm = useProjectFormContext();
+  const taskForm = useTaskFormContext();
   const { removeProject } = useProjectMutation();
   const navigate = useNavigate();
 

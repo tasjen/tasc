@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import TaskFormContext from '../context/TaskFormContext';
+import { useTaskFormContext } from '../context/TaskFormContext';
 import { useTaskMutation } from '../hooks';
 
 type Props = {
@@ -16,7 +15,7 @@ export default function TaskForm({ projectId }: Props) {
     editingTaskId,
     show,
     hide,
-  } = useContext(TaskFormContext);
+  } = useTaskFormContext();
 
   const { addTask, updateTask } = useTaskMutation();
 

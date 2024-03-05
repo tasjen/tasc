@@ -1,9 +1,8 @@
-import { useContext } from 'react';
-import NotificationContext from '../context/NotificationContext';
+import { useNotificationContext } from '../context/NotificationContext';
 import { isAxiosError } from 'axios';
 
 export default function Notification() {
-  const { notification } = useContext(NotificationContext);
+  const { notification } = useNotificationContext();
 
   return notification === null ? (
     <></>

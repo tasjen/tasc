@@ -1,14 +1,13 @@
-import { useContext } from 'react';
-import ProjectFormContext from '../context/ProjectFormContext';
 import { useProjectMutation } from '../hooks';
 import { useNavigate } from 'react-router-dom';
-import TaskFormContext from '../context/TaskFormContext';
+import { useTaskFormContext } from '../context/TaskFormContext';
+import { useProjectFormContext } from '../context/ProjectFormContext';
 
 export default function ProjectForm() {
   const { nameInput, isVisible, editingProjectId, show, hide } =
-    useContext(ProjectFormContext);
+    useProjectFormContext();
 
-  const taskForm = useContext(TaskFormContext);
+  const taskForm = useTaskFormContext();
 
   const { addProject, updateProject } = useProjectMutation();
   const navigate = useNavigate();

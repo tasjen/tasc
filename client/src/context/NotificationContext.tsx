@@ -1,14 +1,22 @@
 import { AxiosError, isAxiosError } from 'axios';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 type NotificationContextType = {
   notification: NotificationMessage;
   showNoti: (message: unknown) => void;
 };
 
-const NotificationContext = createContext<NotificationContextType>(
-  {} as NotificationContextType,
-);
+const NotificationContext = createContext<NotificationContextType | null>(null);
+
+export function useNotificationContext() {
+  const context = useContext(NotificationContext);
+  if (!context) {
+    throw new Error(
+      'useTaskFormContext must be used inside the TaskFormContextProvider',
+    );
+  }
+  return context;
+}
 
 type NotificationMessage = string | null | Error | AxiosError;
 
@@ -26,7 +34,7 @@ function isValidMessage(message: unknown): message is NotificationMessage {
   );
 }
 
-export function NotificationContextProvider(props: Props) {
+export default function NotificationContextProvider(props: Props) {
   const [notification, setNotification] = useState<NotificationMessage>(null);
   const showNoti = (message: unknown) => {
     if (isValidMessage(message)) {
@@ -40,5 +48,3 @@ export function NotificationContextProvider(props: Props) {
     </NotificationContext.Provider>
   );
 }
-
-export default NotificationContext;

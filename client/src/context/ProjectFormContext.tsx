@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { ProjectState } from '../types';
 import { useInput } from '../hooks';
 
@@ -13,15 +13,23 @@ type ProjectFormContextType = {
   showEdit: (project: ProjectState) => void;
 };
 
-const ProjectFormContext = createContext<ProjectFormContextType>(
-  {} as ProjectFormContextType,
-);
+const ProjectFormContext = createContext<ProjectFormContextType | null>(null);
+
+export function useProjectFormContext() {
+  const context = useContext(ProjectFormContext);
+  if (!context) {
+    throw new Error(
+      'useProjectFormContext must be used inside the ProjectFormContextProvider',
+    );
+  }
+  return context;
+}
 
 type Props = {
   children: React.ReactNode;
 };
 
-export function ProjectFormContextProvider(props: Props) {
+export default function ProjectFormContextProvider(props: Props) {
   const [nameInput, setNameInput] = useInput('text');
   const [isVisible, setIsvisible] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
@@ -56,5 +64,3 @@ export function ProjectFormContextProvider(props: Props) {
     </ProjectFormContext.Provider>
   );
 }
-
-export default ProjectFormContext;

@@ -1,6 +1,5 @@
-import { useContext } from 'react';
 import loginService from '../services/login';
-import NotificationContext from '../context/NotificationContext';
+import { useNotificationContext } from '../context/NotificationContext';
 import { useInput, useLocalStorage } from '../hooks';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,7 +7,7 @@ export default function LogInForm() {
   const username = useInput('text');
   const password = useInput('password');
 
-  const { showNoti } = useContext(NotificationContext);
+  const { showNoti } = useNotificationContext();
   const navigate = useNavigate();
 
   async function handleLogIn(event: React.SyntheticEvent) {

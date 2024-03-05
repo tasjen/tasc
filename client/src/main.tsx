@@ -1,9 +1,9 @@
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import { ProjectFormContextProvider } from './context/ProjectFormContext.tsx';
-import { TaskFormContextProvider } from './context/TaskFormContext.tsx';
-import { NotificationContextProvider } from './context/NotificationContext.tsx';
+import ProjectFormContextProvider from './context/ProjectFormContext.tsx';
+import TaskFormContextProvider from './context/TaskFormContext.tsx';
+import NotificationContextProvider from './context/NotificationContext.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import LogInPage, { loader as loginLoader } from './pages/LogInPage.tsx';

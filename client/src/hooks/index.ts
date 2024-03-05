@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChangeEvent, HTMLInputTypeAttribute, useContext, useRef, useState } from "react";
+import { ChangeEvent, HTMLInputTypeAttribute, useRef, useState } from "react";
 import userService from '../services/user';
 import projectService from '../services/project'
 import taskService from '../services/task'
-import NotificationContext from "../context/NotificationContext";
+import { useNotificationContext } from "../context/NotificationContext";
 import { UserState } from "../types";
 
 export function useLocalStorage<T>(key: string) {
@@ -62,7 +62,7 @@ export function useUserDataQuery(options = {}) {
 
 export function useProjectMutation() {
   const queryClient = useQueryClient();
-  const { showNoti } = useContext(NotificationContext);
+  const { showNoti } = useNotificationContext();
 
   const { mutateAsync: addProject } = useMutation({
     mutationFn: projectService.create,
@@ -114,7 +114,7 @@ export function useProjectMutation() {
 
 export function useTaskMutation() {
   const queryClient = useQueryClient();
-  const { showNoti } = useContext(NotificationContext);
+  const { showNoti } = useNotificationContext();
 
   const { mutateAsync: addTask } = useMutation({
     mutationFn: taskService.create,

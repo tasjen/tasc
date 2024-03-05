@@ -1,12 +1,12 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import userService from '../services/user';
-import NotificationContext from '../context/NotificationContext';
+import { useNotificationContext } from '../context/NotificationContext';
 
 export default function RegisterForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const { showNoti } = useContext(NotificationContext);
+  const { showNoti } = useNotificationContext();
 
   async function handleRegister(event: React.SyntheticEvent) {
     event.preventDefault();

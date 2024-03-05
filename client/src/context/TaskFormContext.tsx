@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useInput } from '../hooks';
 
 type TaskObject = {
@@ -24,15 +24,23 @@ type TaskFormContextType = {
   showEdit: (taskObject: TaskObject) => void;
 };
 
-const TaskFormContext = createContext<TaskFormContextType>(
-  {} as TaskFormContextType,
-);
+const TaskFormContext = createContext<TaskFormContextType | null>(null);
+
+export function useTaskFormContext() {
+  const context = useContext(TaskFormContext);
+  if (!context) {
+    throw new Error(
+      'useTaskFormContext must be used inside the TaskFormContextProvider',
+    );
+  }
+  return context;
+}
 
 type Props = {
   children: React.ReactNode;
 };
 
-export function TaskFormContextProvider(props: Props) {
+export default function TaskFormContextProvider(props: Props) {
   const [nameInput, setNameInput] = useInput('text');
   const [descriptionInput, setDescriptionInput] = useInput('text');
   const [dueDateInput, setDueDateInput] = useInput('date');
@@ -79,5 +87,3 @@ export function TaskFormContextProvider(props: Props) {
     </TaskFormContext.Provider>
   );
 }
-
-export default TaskFormContext;

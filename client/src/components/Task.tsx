@@ -1,8 +1,8 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { TaskJson } from '../types';
 import { useTaskMutation } from '../hooks';
-import TaskFormContext from '../context/TaskFormContext';
-import ProjectFormContext from '../context/ProjectFormContext';
+import { useTaskFormContext } from '../context/TaskFormContext';
+import { useProjectFormContext } from '../context/ProjectFormContext';
 
 type Props = {
   task: Omit<TaskJson, 'project'>;
@@ -13,8 +13,8 @@ export default function Task({ task }: Props) {
 
   const { removeTask } = useTaskMutation();
 
-  const projectForm = useContext(ProjectFormContext);
-  const taskForm = useContext(TaskFormContext);
+  const projectForm = useProjectFormContext();
+  const taskForm = useTaskFormContext();
 
   function toggleDescription() {
     setShowDescription(!showDescription);
