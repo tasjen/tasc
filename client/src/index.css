@@ -103,19 +103,16 @@ nav {
   }
 }
 
-.menu:hover,
-.project:hover {
-  border-left: 4px solid black;
-  cursor: pointer;
-}
-
 .button {
   cursor: pointer;
 }
 
-.menu:has(.active),
+.project:hover {
+  border-left: 4px solid #aaa;
+}
+
+/* .menu:has(.active), */
 .project:has(.active) {
-  cursor: default;
   border-left: 4px solid black;
 }
 
@@ -125,7 +122,7 @@ nav {
 }
 
 .project-name {
-  margin-right: auto;
+  flex: 1;
 }
 
 #project-header {
