@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-base-to-string */
 import mongoose from 'mongoose';
-import { NewTask, Priority } from '../utils/types';
 import Project from './project_model';
 
-export interface TaskDocument extends NewTask, mongoose.Document {
-  _id: mongoose.Schema.Types.ObjectId;
-  __v: number;
+export enum Priority {
+  Low = 1,
+  Medium = 2,
+  High = 3,
 }
 
 const taskSchema = new mongoose.Schema({
@@ -20,7 +19,6 @@ const taskSchema = new mongoose.Schema({
   },
   due_date: {
     type: Date,
-    required: true,
   },
   priority: {
     type: Number,
@@ -30,43 +28,44 @@ const taskSchema = new mongoose.Schema({
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
+    required: true
   },
 });
 
-taskSchema.pre('save', function (this: TaskDocument, next) {
-  if (this.isNew) {
-    void Promise.resolve(
-      Project.findOneAndUpdate(
-        { _id: this.project },
-        { $push: { tasks: this._id } }
-      )
-    );
-  }
+type TaskDoc = mongoose.InferSchemaType<typeof taskSchema>;
+export type NewTask = Omit<TaskDoc, 'project'> & { project: string };
 
+taskSchema.pre('save', async function (this, next) {
+  if (this.isNew) {
+    await Project.findOneAndUpdate(
+      { _id: this.project },
+      { $push: { tasks: this._id } }
+    );
+  };
   next();
 });
 
-taskSchema.pre(
-  'deleteOne',
-  { document: true, query: false },
-  function (this: TaskDocument, next) {
-    void Promise.resolve(
-      Project.findOneAndUpdate(
-        { _id: this.project },
-        { $pull: { tasks: this._id } }
-      )
-    );
-    next();
-  }
-);
+taskSchema.pre('deleteOne', { document: true, query: false }, async function (this, next) {
+  await Project.findOneAndUpdate(
+    { _id: this.project },
+    { $pull: { tasks: this._id } }
+  );
+  next();
+});
+
+
+type Ret = {
+  id?: string;
+  _id?: mongoose.Types.ObjectId;
+  __v?: number;
+};
 
 taskSchema.set('toJSON', {
-  transform: (_doc, ret) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-    ret.id = ret._id.toString();
+  transform: (_doc, ret: Ret) => {
+    ret.id = ret._id?.toString();
     delete ret._id;
     delete ret.__v;
   },
 });
 
-export default mongoose.model<TaskDocument>('Task', taskSchema);
+export default mongoose.model('Task', taskSchema);

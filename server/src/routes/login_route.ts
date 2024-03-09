@@ -3,28 +3,30 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/user_model';
 import { SECRET } from '../utils/config';
+import { isString } from '../utils/validator';
 
 const loginRouter = Router();
 
 loginRouter.post('/', (async (req, res) => {
-  const { username = '', password = '' } = req.body as {
-    username: string;
-    password: string;
-  };
-
-  const user = await User.findOne({ username });
-  const isPasswordCorrect =
-    user === null ? false : await bcrypt.compare(password, user.password);
-
-  if (!user || !isPasswordCorrect) {
+  const username: unknown = req.body.username;
+  const password: unknown = req.body.password;
+  if (!isString(username) || !isString(password)) {
     res.status(401).json({
       error: 'invalid username or password',
     });
     return;
   }
 
-  const { id: userId }: { id: string } = user.toJSON();
-  const token = jwt.sign({ userId }, SECRET);
+  const user = await User.findOne({ username });
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    res.status(401).json({
+      error: 'invalid username or password',
+    });
+    return;
+  }
+
+  const { id }: { id: string } = user.toJSON();
+  const token = jwt.sign({ userId: id }, SECRET);
 
   res.json({ token, username });
 }) as RequestHandler);

@@ -4,9 +4,9 @@ import { userExtractor } from '../utils/middleware';
 
 const userRouter = express.Router();
 
-userRouter.get('/', (async (req, res) => {
-  await userController.getAllUsers(req, res);
-}) as RequestHandler);
+// userRouter.get('/', (async (req, res) => {
+//   await userController.getAllUsers(req, res);
+// }) as RequestHandler);
 
 userRouter.get('/:username', userExtractor, (async (req, res) => {
   await userController.getUser(req, res);

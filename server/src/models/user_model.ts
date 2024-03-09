@@ -1,15 +1,6 @@
 import mongoose from 'mongoose';
-import { NewUser } from '../utils/types';
 import bcrypt from 'bcryptjs';
 import Project from './project_model';
-
-export interface UserDocument
-  extends Omit<NewUser, 'projects'>,
-    mongoose.Document {
-  _id: mongoose.Schema.Types.ObjectId;
-  __v: number;
-  projects: mongoose.Schema.Types.ObjectId[];
-}
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -28,11 +19,15 @@ const userSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Project',
+      required: true
     },
   ],
 });
 
-userSchema.pre('save', async function (this: UserDocument, next) {
+type UserDoc = mongoose.InferSchemaType<typeof userSchema>;
+export type NewUser = Omit<UserDoc, 'projects'> & { projects: string[] };
+
+userSchema.pre('save', async function (this, next) {
   if (!this.isModified('password')) {
     return next();
   }
@@ -49,14 +44,20 @@ userSchema.pre('save', async function (this: UserDocument, next) {
   next();
 });
 
+type Ret = {
+  id?: string;
+  _id?: mongoose.Types.ObjectId;
+  __v?: number;
+  password?: string
+};
+
 userSchema.set('toJSON', {
-  transform: (_doc, ret) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-    ret.id = ret._id.toString();
+  transform: (_doc, ret: Ret) => {
+    ret.id = ret._id?.toString();
     delete ret._id;
     delete ret.__v;
     delete ret.password;
   },
 });
 
-export default mongoose.model<UserDocument>('User', userSchema);
+export default mongoose.model('User', userSchema);
