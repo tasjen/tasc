@@ -4,7 +4,7 @@ import userService from '../services/user';
 import projectService from '../services/project'
 import taskService from '../services/task'
 import { useNotificationContext } from "../context/NotificationContext";
-import { UserState } from "../types";
+import { TUserData } from "../types";
 
 export function useLocalStorage<T>(key: string) {
   function getItem(): T | null {
@@ -67,11 +67,11 @@ export function useProjectMutation() {
   const { mutateAsync: addProject } = useMutation({
     mutationFn: projectService.create,
     onSuccess: (returnedProject) => {
-      const userData: UserState | undefined = queryClient.getQueryData(['userData']);
+      const userData: TUserData | undefined = queryClient.getQueryData(['userData']);
       if (userData) {
         queryClient.setQueryData(['userData'], {
           ...userData,
-          projects: [...userData.projects, returnedProject],
+          projects: [...userData.projects, { ...returnedProject, tasks: [] }],
         });
       }
     },
@@ -81,7 +81,7 @@ export function useProjectMutation() {
   const { mutateAsync: updateProject } = useMutation({
     mutationFn: projectService.update,
     onSuccess: (updatedProject) => {
-      const userData: UserState | undefined = queryClient.getQueryData(['userData']);
+      const userData: TUserData | undefined = queryClient.getQueryData(['userData']);
       if (userData) {
         queryClient.setQueryData(['userData'], {
           ...userData,
@@ -97,7 +97,7 @@ export function useProjectMutation() {
   const { mutateAsync: removeProject } = useMutation({
     mutationFn: projectService.remove,
     onSuccess: (projectId) => {
-      const userData: UserState | undefined = queryClient.getQueryData(['userData']);
+      const userData: TUserData | undefined = queryClient.getQueryData(['userData']);
       if (userData) {
         queryClient.setQueryData(['userData'], {
           ...userData,
@@ -119,7 +119,7 @@ export function useTaskMutation() {
   const { mutateAsync: addTask } = useMutation({
     mutationFn: taskService.create,
     onSuccess: ({ project: projectId, ...task }) => {
-      const userData: UserState | undefined = queryClient.getQueryData(['userData']);
+      const userData: TUserData | undefined = queryClient.getQueryData(['userData']);
       if (userData) {
         queryClient.setQueryData(['userData'], {
           ...userData,
@@ -134,7 +134,7 @@ export function useTaskMutation() {
   const { mutateAsync: updateTask } = useMutation({
     mutationFn: taskService.update,
     onSuccess: ({ project: projectId, ...task }) => {
-      const userData: UserState | undefined = queryClient.getQueryData(['userData']);
+      const userData: TUserData | undefined = queryClient.getQueryData(['userData']);
       if (userData) {
         queryClient.setQueryData(['userData'], {
           ...userData,
@@ -150,7 +150,7 @@ export function useTaskMutation() {
   const { mutateAsync: removeTask } = useMutation({
     mutationFn: taskService.remove,
     onSuccess: (taskId) => {
-      const userData: UserState | undefined = queryClient.getQueryData(['userData']);
+      const userData: TUserData | undefined = queryClient.getQueryData(['userData']);
       if (userData) {
         queryClient.setQueryData(['userData'], {
           ...userData,

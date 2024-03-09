@@ -1,31 +1,29 @@
 import axios from 'axios';
 import { getAuthHeader, getToken } from './util';
-import { ProjectState } from '../types';
+import { ProjectAPI } from '../types';
 
 const baseUrl = '/api/projects';
 
-async function create(projectObject: { name: string; }): Promise<ProjectState> {
+async function create(projectObject: Omit<ProjectAPI, 'id'>): Promise<ProjectAPI> {
   const res = await axios.post(
     baseUrl,
     projectObject,
     getAuthHeader(getToken())
   );
-  delete res.data.user;
   return res.data;
 };
 
-async function remove(projectId: string) {
+async function remove(projectId: string): Promise<string> {
   await axios.delete(`${baseUrl}/${projectId}`, getAuthHeader(getToken()));
   return projectId;
 };
 
-async function update(projectObject: { name: string; id: string }) {
+async function update(projectObject: ProjectAPI): Promise<ProjectAPI> {
   const res = await axios.put(
     `${baseUrl}/${projectObject.id}`,
     projectObject,
     getAuthHeader(getToken())
   );
-  delete res.data.project;
   return res.data;
 };
 

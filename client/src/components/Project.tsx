@@ -1,11 +1,11 @@
 import { useProjectFormContext } from '../context/ProjectFormContext';
-import { ProjectState } from '../types';
+import { TProject } from '../types';
 import { useProjectMutation } from '../hooks';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTaskFormContext } from '../context/TaskFormContext';
 
 type Props = {
-  project: ProjectState;
+  project: TProject;
 };
 
 export default function Project({ project }: Props) {

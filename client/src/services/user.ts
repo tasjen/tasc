@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { UserState } from '../types';
+import { TUserData } from '../types';
 import { getAuthHeader } from './util';
 
 const baseUrl = '/api/users';
 
-async function getUserData(): Promise<UserState> {
+async function getUserData(): Promise<TUserData> {
   const loggedUser = JSON.parse(localStorage.getItem('loggedUser')!);
   const res = await axios.get(
     `${baseUrl}/${loggedUser.username}`,
