@@ -1,8 +1,6 @@
-import User from '../models/user_model';
-import Project from '../models/project_model';
-import Task from '../models/task_model';
-import { NewUser, NewProject, NewTask, Priority } from './types';
-import { JwtFormat } from './types';
+import User, { NewUser } from '../models/user_model';
+import Project, { NewProject } from '../models/project_model';
+import Task, { NewTask, Priority } from '../models/task_model';
 
 export class ValError extends Error {
   constructor(message: string) {
@@ -11,20 +9,8 @@ export class ValError extends Error {
   }
 }
 
-const isString = (param: unknown): param is string => {
+export const isString = (param: unknown): param is string => {
   return typeof param === 'string' || param instanceof String;
-};
-
-export const isJwtFormat = (param: unknown): param is JwtFormat => {
-  return (
-    typeof param === 'object' &&
-    param !== undefined &&
-    param !== null &&
-    'username' in param &&
-    'id' in param &&
-    isString(param.username) &&
-    isString(param.id)
-  );
 };
 
 const parseUsername = async (username: unknown): Promise<string> => {
@@ -327,17 +313,12 @@ const isYourProject = async (
   projectId: string,
   userId: string
 ): Promise<boolean> => {
-  const userInfo = await User.findById(userId).populate('projects');
-  if (userInfo === null) {
+  const user = await User.findById(userId);
+  if (user === null) {
     throw new ValError('isYourProject error: `userInfo` is null');
   }
 
-  return !!userInfo.toJSON().projects.find((project) => {
-    if (!('id' in project)) {
-      throw new ValError('isYourProject error: `id` is not in project');
-    }
-    return project.id === projectId;
-  });
+  return !!user.projects.find((project) => project.toString() === projectId);
 };
 
 const isUniqueTaskName = async (

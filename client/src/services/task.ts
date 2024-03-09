@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { getAuthHeader, getToken } from './util';
-import { NewTask, TaskJson } from '../types';
+import { TaskAPI } from '../types';
 
 const baseUrl = '/api/tasks';
 
-async function create(taskObject: NewTask): Promise<TaskJson> {
+async function create(taskObject: Omit<TaskAPI, 'id'>): Promise<TaskAPI> {
   const res = await axios.post(baseUrl, taskObject, getAuthHeader(getToken()));
   return res.data;
 };
@@ -14,7 +14,7 @@ async function remove(taskId: string): Promise<string> {
   return taskId
 };
 
-async function update(taskObject: TaskJson): Promise<TaskJson> {
+async function update(taskObject: TaskAPI): Promise<TaskAPI> {
   const res = await axios.put(
     `${baseUrl}/${taskObject.id}`,
     taskObject,

@@ -1,16 +1,6 @@
-/* eslint-disable @typescript-eslint/no-base-to-string */
 import mongoose from 'mongoose';
-import { NewProject } from '../utils/types';
 import Task from './task_model';
 import User from './user_model';
-
-export interface ProjectDocument
-  extends Omit<NewProject, 'tasks'>,
-    mongoose.Document {
-  _id: mongoose.Schema.Types.ObjectId;
-  __v: number;
-  tasks: mongoose.Schema.Types.ObjectId[];
-}
 
 const projectSchema = new mongoose.Schema({
   name: {
@@ -22,49 +12,50 @@ const projectSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Task',
+      required: true
     },
   ],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true
   },
 });
 
-projectSchema.pre('save', function (this: ProjectDocument, next) {
+type ProjectDoc = mongoose.InferSchemaType<typeof projectSchema>;
+export type NewProject = Omit<ProjectDoc, 'user'> & { user: string };
+
+projectSchema.pre('save', async function (this, next) {
   if (this.isNew) {
-    void Promise.resolve(
-      User.findOneAndUpdate(
-        { _id: this.user },
-        { $push: { projects: this._id } }
-      )
+    await User.findOneAndUpdate(
+      { _id: this.user },
+      { $push: { projects: this._id } }
     );
   }
-
   next();
 });
 
-projectSchema.pre(
-  'deleteOne',
-  { document: true, query: false },
-  function (this: ProjectDocument, next) {
-    void Promise.all([...this.tasks.map((t) => Task.findByIdAndDelete(t))]);
-    void Promise.resolve(
-      User.findOneAndUpdate(
-        { _id: this.user },
-        { $pull: { projects: this._id } }
-      )
-    );
-    next();
-  }
-);
+projectSchema.pre('deleteOne', { document: true, query: false }, async function (this, next) {
+  await Promise.all([...this.tasks.map((t) => Task.findByIdAndDelete(t))]);
+  await User.findOneAndUpdate(
+    { _id: this.user },
+    { $pull: { projects: this._id } }
+  );
+  next();
+});
+
+type Ret = {
+  id?: string;
+  _id?: mongoose.Types.ObjectId;
+  __v?: number;
+};
 
 projectSchema.set('toJSON', {
-  transform: (_doc, ret) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-    ret.id = ret._id.toString();
+  transform: (_doc, ret: Ret) => {
+    ret.id = ret._id?.toString();
     delete ret._id;
     delete ret.__v;
   },
 });
 
-export default mongoose.model<ProjectDocument>('Project', projectSchema);
+export default mongoose.model('Project', projectSchema);

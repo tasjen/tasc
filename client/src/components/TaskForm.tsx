@@ -35,7 +35,7 @@ export default function TaskForm({ projectId }: Props) {
       await addTask({
         name: nameInput.value,
         description: descriptionInput.value,
-        due_date: new Date(dueDateInput.value),
+        due_date: dueDateInput.value,
         priority: +priorityInput.value,
         project: projectId,
       });

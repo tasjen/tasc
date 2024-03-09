@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import morgan from 'morgan';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from '../models/user_model';
 import { SECRET } from './config';
-import { JwtFormat } from './types';
 
 export const userExtractor = (async (
   req: Request,
@@ -11,14 +10,13 @@ export const userExtractor = (async (
   next: NextFunction
 ): Promise<void> => {
   let token = '';
-  req.user = '';
 
   const authorization = req.get('authorization');
   if (authorization && authorization.startsWith('Bearer')) {
     token = authorization.replace('Bearer ', '');
   }
 
-  const decodedToken = jwt.verify(token, SECRET) as JwtFormat;
+  const decodedToken = jwt.verify(token, SECRET) as JwtPayload;
 
   const user = await User.findById(decodedToken.userId);
   if (user === null) {
@@ -26,7 +24,7 @@ export const userExtractor = (async (
     return;
   }
 
-  req.user = decodedToken.userId;
+  req.user = decodedToken.userId as string;
   next();
 }) as RequestHandler;
 
@@ -34,11 +32,11 @@ export const logger = () => {
   morgan.token('data', (req: Request) => JSON.stringify(req.body));
   return process.env.NODE_ENV !== 'test'
     ? morgan(
-        ':method :url :status :res[content-length] - :response-time ms :data'
-      )
+      ':method :url :status :res[content-length] - :response-time ms :data'
+    )
     : (((_req, _res, next) => {
-        next();
-      }) as RequestHandler);
+      next();
+    }) as RequestHandler);
 };
 
 export const unknownEndpoint: RequestHandler = (_req, res) => {

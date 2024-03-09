@@ -1,14 +1,7 @@
 import { format } from 'date-fns';
 import { createContext, useContext, useRef, useState } from 'react';
 import { UseInputReturnType, useInput } from '../hooks';
-
-type TaskObject = {
-  name: string;
-  description: string;
-  due_date: string;
-  priority: 1 | 2 | 3;
-  id: string;
-};
+import { TTask } from '../types';
 
 type InputAttributes = UseInputReturnType[0];
 
@@ -22,7 +15,7 @@ type TaskFormContextType = {
   editingTaskId: string | null;
   show: () => void;
   hide: () => void;
-  showEdit: (taskObject: TaskObject) => void;
+  showEdit: (taskObject: TTask) => void;
 };
 
 const TaskFormContext = createContext<TaskFormContextType | null>(null);
@@ -64,7 +57,7 @@ export default function TaskFormContextProvider(props: Props) {
     setPriorityInput('1');
     setEditingTaskId(null);
   }
-  function showEdit(task: TaskObject) {
+  function showEdit(task: TTask) {
     setNameInput(task.name);
     setDescriptionInput(task.description);
     setDueDateInput(format(task.due_date, 'yyyy-MM-dd'));

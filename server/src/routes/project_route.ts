@@ -4,9 +4,9 @@ import { userExtractor } from '../utils/middleware';
 
 const projectRouter = Router();
 
-projectRouter.get('/', (async (req, res) => {
-  await projectController.getAllProjects(req, res);
-}) as RequestHandler);
+// projectRouter.get('/', (async (req, res) => {
+//   await projectController.getAllProjects(req, res);
+// }) as RequestHandler);
 
 projectRouter.post('/', userExtractor, (async (req, res) => {
   await projectController.addProject(req, res);

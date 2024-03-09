@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { TaskJson } from '../types';
+import { TTask } from '../types';
 import { useTaskMutation } from '../hooks';
 import { useTaskFormContext } from '../context/TaskFormContext';
 import { useProjectFormContext } from '../context/ProjectFormContext';
 
 type Props = {
-  task: Omit<TaskJson, 'project'>;
+  task: TTask;
 };
 
 export default function Task({ task }: Props) {
