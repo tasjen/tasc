@@ -209,15 +209,11 @@ export const parseTask = async (
 export const parseTaskForUpdate = async (
   object: unknown,
   userId: string
-): Promise<Omit<NewTask, 'project'> & { id: string }> => {
+): Promise<Partial<Omit<NewTask, 'project'>> & { id: string }> => {
   if (
     !object ||
     typeof object !== 'object' ||
     !(
-      'name' in object &&
-      'description' in object &&
-      'due_date' in object &&
-      'priority' in object &&
       'project' in object &&
       'id' in object
     ) ||
@@ -227,13 +223,15 @@ export const parseTaskForUpdate = async (
   ) {
     throw new ValError('Incorrect or missing data');
   }
+
   const parsedTask = {
-    name: await parseTaskNameForUpdate(object.name, object.project, object.id),
-    description: parseDescription(object.description),
-    due_date: parseDueDate(object.due_date),
-    priority: parsePriority(object.priority),
+    name: 'name' in object ? await parseTaskNameForUpdate(object.name, object.project, object.id) : undefined,
+    description: 'description' in object ? parseDescription(object.description) : undefined,
+    due_date: 'due_date' in object ? parseDueDate(object.due_date) : undefined,
+    priority: 'priority' in object ? parsePriority(object.priority) : undefined,
     id: object.id,
   };
+
   return parsedTask;
 };
 

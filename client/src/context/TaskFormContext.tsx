@@ -12,7 +12,7 @@ type TaskFormContextType = {
   dueDateInput: InputAttributes;
   priorityInput: InputAttributes;
   isVisible: boolean;
-  editingTaskId: string | null;
+  editingTask: TTask | null;
   show: () => void;
   hide: () => void;
   showEdit: (taskObject: TTask) => void;
@@ -41,7 +41,7 @@ export default function TaskFormContextProvider(props: Props) {
   const [priorityInput, setPriorityInput] = useInput('radio');
 
   const [isVisible, setIsvisible] = useState(false);
-  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editingTask, setEditingTask] = useState<TTask | null>(null);
 
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -55,14 +55,14 @@ export default function TaskFormContextProvider(props: Props) {
     setDescriptionInput('');
     setDueDateInput('');
     setPriorityInput('1');
-    setEditingTaskId(null);
+    setEditingTask(null);
   }
   function showEdit(task: TTask) {
     setNameInput(task.name);
     setDescriptionInput(task.description);
     setDueDateInput(format(task.due_date, 'yyyy-MM-dd'));
     setPriorityInput(task.priority.toString());
-    setEditingTaskId(task.id);
+    setEditingTask(task);
     setIsvisible(true);
     nameInputRef.current?.focus();
   }
@@ -76,7 +76,7 @@ export default function TaskFormContextProvider(props: Props) {
         dueDateInput,
         priorityInput,
         isVisible,
-        editingTaskId,
+        editingTask,
         show,
         hide,
         showEdit,

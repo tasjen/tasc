@@ -4,7 +4,7 @@ import { useTaskFormContext } from '../context/TaskFormContext';
 import { useProjectFormContext } from '../context/ProjectFormContext';
 
 export default function ProjectForm() {
-  const { nameInput, nameInputRef, isVisible, editingProjectId, show, hide } =
+  const { nameInput, nameInputRef, isVisible, editingProject, show, hide } =
     useProjectFormContext();
 
   const taskForm = useTaskFormContext();
@@ -14,8 +14,10 @@ export default function ProjectForm() {
 
   async function handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    if (editingProjectId !== null) {
-      await updateProject({ name: nameInput.value, id: editingProjectId });
+    if (editingProject) {
+      if (nameInput.value !== editingProject.name) {
+        await updateProject({ name: nameInput.value, id: editingProject.id });
+      }
     } else {
       await addProject({ name: nameInput.value });
     }
@@ -38,7 +40,7 @@ export default function ProjectForm() {
             {...nameInput}
           />
           <button data-test="add-project-button" type="submit">
-            {editingProjectId !== null ? 'Update' : 'Add'}
+            {editingProject !== null ? 'Update' : 'Add'}
           </button>
           <button type="button" onClick={hide}>
             Cancel
