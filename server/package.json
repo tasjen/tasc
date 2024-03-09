@@ -7,7 +7,7 @@
     "tsc": "tsc",
     "start": "NODE_ENV=prod node --enable-source-maps build/index.js",
     "dev": "cross-env NODE_ENV=dev ts-node-dev src/index.ts",
-    "build": "node esbuild-script.js",
+    "build": "tsc && node esbuild-script.js",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "start:test": "NODE_ENV=test ts-node-dev src/index.ts",
     "lint": "eslint --ext .ts ."

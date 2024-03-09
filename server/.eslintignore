@@ -1,4 +1,6 @@
 build
+tsc_build
+node_modules
 dist
 *.js
 *.d.ts

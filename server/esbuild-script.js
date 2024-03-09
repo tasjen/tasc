@@ -1,7 +1,7 @@
 const { build } = require('esbuild');
 
 build({
-  entryPoints: ['./src/index.ts'],
+  entryPoints: ['./tsc_build/index.js'],
   outfile: './build/index.js',
   platform: 'node',
   bundle: true,

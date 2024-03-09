@@ -1,4 +1,5 @@
 node_modules
+tsc_build
 build
 .env
 dist

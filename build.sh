@@ -9,4 +9,4 @@ cd ../client
 npm run build
 mv dist ../server
 cd ../server
-npm run tsc
+npm run build
