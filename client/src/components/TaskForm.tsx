@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { useTaskFormContext } from '../context/TaskFormContext';
 import { useTaskMutation } from '../hooks';
 
@@ -13,7 +14,7 @@ export default function TaskForm({ projectId }: Props) {
     dueDateInput,
     priorityInput,
     isVisible,
-    editingTaskId,
+    editingTask,
     show,
     hide,
   } = useTaskFormContext();
@@ -22,15 +23,34 @@ export default function TaskForm({ projectId }: Props) {
 
   async function handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    if (editingTaskId !== null) {
-      await updateTask({
-        name: nameInput.value,
-        description: descriptionInput.value,
-        due_date: dueDateInput.value,
-        priority: +priorityInput.value,
-        project: projectId,
-        id: editingTaskId,
-      });
+    if (editingTask) {
+      const toUpdate = JSON.parse(
+        JSON.stringify({
+          name:
+            nameInput.value.trim() === editingTask.name
+              ? undefined
+              : nameInput.value,
+          description:
+            descriptionInput.value.trim() === editingTask.description
+              ? undefined
+              : descriptionInput.value,
+          due_date:
+            dueDateInput.value === format(editingTask.due_date, 'yyyy-MM-dd')
+              ? undefined
+              : dueDateInput.value,
+          priority:
+            +priorityInput.value === editingTask.priority
+              ? undefined
+              : +priorityInput.value,
+        }),
+      );
+      if (Object.keys(toUpdate).length !== 0) {
+        await updateTask({
+          ...toUpdate,
+          project: projectId,
+          id: editingTask.id,
+        });
+      }
     } else {
       await addTask({
         name: nameInput.value,
@@ -104,7 +124,7 @@ export default function TaskForm({ projectId }: Props) {
             </div>
           </div>
           <button type="submit">
-            {editingTaskId == null ? 'Add' : 'Update'}
+            {editingTask == null ? 'Add' : 'Update'}
           </button>
           <button type="button" onClick={hide}>
             Cancel

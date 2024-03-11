@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useUserDataQuery } from '../hooks';
-import Task from '../components/Task';
 import TaskForm from '../components/TaskForm';
+import TaskList from '../components/TaskList';
 
 export default function ProjectPage() {
   const { projectName } = useParams();
@@ -16,18 +16,7 @@ export default function ProjectPage() {
   return (
     <>
       <p id="tab-name">{project.name}</p>
-      <ul id="task-list">
-        {project.tasks.length === 0 ? (
-          <p>No tasks here.</p>
-        ) : (
-          project.tasks
-            .sort(
-              (a, b) =>
-                new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
-            )
-            .map((t) => <Task key={t.id} task={t} />)
-        )}
-      </ul>
+      <TaskList tasks={project.tasks} />
       <TaskForm projectId={project.id} />
     </>
   );
