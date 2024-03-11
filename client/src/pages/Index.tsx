@@ -16,7 +16,9 @@ export default function Index() {
     <main>
       <nav>
         <p id="project-header">Projects</p>
-        <ProjectList />
+        <ul id="project-list" data-test="project-list">
+          <ProjectList />
+        </ul>
         <ProjectForm />
       </nav>
       <div id="main-section">

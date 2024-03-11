@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useRef, useState } from 'react';
-import { TProject } from '../types';
+import { ProjectAPI } from '../types';
 import { useInput } from '../hooks';
 
 type InputAttributes = ReturnType<typeof useInput>[0];
@@ -11,7 +11,7 @@ type ProjectFormContextType = {
   editingProjectId: string | null;
   show: () => void;
   hide: () => void;
-  showEdit: (project: TProject) => void;
+  showEdit: (project: ProjectAPI) => void;
 };
 
 const ProjectFormContext = createContext<ProjectFormContextType | null>(null);
@@ -47,7 +47,7 @@ export default function ProjectFormContextProvider(props: Props) {
     setNameInput('');
   }
 
-  function showEdit(project: TProject) {
+  function showEdit(project: ProjectAPI) {
     setNameInput(project.name);
     setEditingProjectId(project.id);
     setIsvisible(true);
