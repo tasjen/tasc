@@ -19,12 +19,12 @@ const parseUsername = async (username: unknown): Promise<string> => {
   }
   if (!(await isUniqueUsername(username))) {
     throw new ValError(
-      `Username must be unique: '${username}' is already taken`
+      `Username must be unique: '${username}' is already taken`,
     );
   }
   if (username.includes(' ')) {
     throw new ValError(
-      `Empty spaces are not allowed in username: '${username}'`
+      `Empty spaces are not allowed in username: '${username}'`,
     );
   }
   return username;
@@ -40,7 +40,7 @@ const parsePassword = (password: unknown): string => {
   }
   if (password.includes(' ')) {
     throw new ValError(
-      `Empty spaces are not allowed in password: '${password}'`
+      `Empty spaces are not allowed in password: '${password}'`,
     );
   }
   return password;
@@ -64,7 +64,7 @@ export const parseUser = async (object: unknown): Promise<NewUser> => {
 
 const isUniqueProjectName = async (
   projectName: string,
-  userId: string
+  userId: string,
 ): Promise<boolean> => {
   let user = await User.findById(userId).populate('projects');
   if (user === null) {
@@ -82,14 +82,14 @@ const isUniqueProjectName = async (
 
 const parseProjectName = async (
   projectName: unknown,
-  userId: string
+  userId: string,
 ): Promise<string> => {
   if (!isString(projectName) || projectName.length < 1) {
     throw new ValError('Project name must be at least 1 character');
   }
   if (!(await isUniqueProjectName(projectName, userId))) {
     throw new ValError(
-      `Project name must be unique: project named '${projectName}' already exists`
+      `Project name must be unique: project named '${projectName}' already exists`,
     );
   }
   return projectName;
@@ -97,7 +97,7 @@ const parseProjectName = async (
 
 export const parseProject = async (
   object: unknown,
-  userId: string
+  userId: string,
 ): Promise<NewProject> => {
   if (!object || typeof object !== 'object' || !('name' in object)) {
     throw new ValError('Incorrect or missing data');
@@ -112,7 +112,7 @@ export const parseProject = async (
 
 export const parseProjectForUpdate = async (
   object: unknown,
-  userId: string
+  userId: string,
 ): Promise<Omit<NewProject, 'tasks' | 'user'> & { id: string }> => {
   if (
     !object ||
@@ -133,14 +133,14 @@ export const parseProjectForUpdate = async (
 const parseProjectNameForUpdate = async (
   projectName: unknown,
   userId: string,
-  projectId: string
+  projectId: string,
 ): Promise<string> => {
   if (!isString(projectName) || projectName.length < 1) {
     throw new ValError('Project name must be at least 1 character');
   }
   if (!(await isUniqueProjectNameForUpdate(projectName, userId, projectId))) {
     throw new ValError(
-      `Project name must be unique: project named '${projectName}' already exists`
+      `Project name must be unique: project named '${projectName}' already exists`,
     );
   }
   return projectName;
@@ -149,7 +149,7 @@ const parseProjectNameForUpdate = async (
 const isUniqueProjectNameForUpdate = async (
   projectName: string,
   userId: string,
-  projectId: string
+  projectId: string,
 ): Promise<boolean> => {
   let user = await User.findById(userId).populate('projects');
   const currentProject = await Project.findById(projectId);
@@ -165,7 +165,7 @@ const isUniqueProjectNameForUpdate = async (
     .filter((project) => {
       if (!('name' in project)) {
         throw new Error(
-          'isUniqueProjectName error: `name` is not in project document'
+          'isUniqueProjectName error: `name` is not in project document',
         );
       }
       return project.name !== currentProject.name;
@@ -180,7 +180,7 @@ const isUniqueProjectNameForUpdate = async (
 
 export const parseTask = async (
   object: unknown,
-  userId: string
+  userId: string,
 ): Promise<NewTask> => {
   if (
     !object ||
@@ -208,15 +208,12 @@ export const parseTask = async (
 
 export const parseTaskForUpdate = async (
   object: unknown,
-  userId: string
+  userId: string,
 ): Promise<Partial<Omit<NewTask, 'project'>> & { id: string }> => {
   if (
     !object ||
     typeof object !== 'object' ||
-    !(
-      'project' in object &&
-      'id' in object
-    ) ||
+    !('project' in object && 'id' in object) ||
     !isString(object.project) ||
     !isString(object.id) ||
     !(await isYourProject(object.project, userId))
@@ -225,8 +222,14 @@ export const parseTaskForUpdate = async (
   }
 
   const parsedTask = {
-    name: 'name' in object ? await parseTaskNameForUpdate(object.name, object.project, object.id) : undefined,
-    description: 'description' in object ? parseDescription(object.description) : undefined,
+    name:
+      'name' in object
+        ? await parseTaskNameForUpdate(object.name, object.project, object.id)
+        : undefined,
+    description:
+      'description' in object
+        ? parseDescription(object.description)
+        : undefined,
     due_date: 'due_date' in object ? parseDueDate(object.due_date) : undefined,
     priority: 'priority' in object ? parsePriority(object.priority) : undefined,
     id: object.id,
@@ -270,7 +273,7 @@ const parseDescription = (description: unknown): string => {
 
 const parseTaskName = async (
   name: unknown,
-  projectId: string
+  projectId: string,
 ): Promise<string> => {
   if (!isString(name) || name.length < 1) {
     throw new ValError('Incorrect or missing name');
@@ -285,7 +288,7 @@ const parseTaskName = async (
 const parseTaskNameForUpdate = async (
   name: unknown,
   projectId: string,
-  taskId: string
+  taskId: string,
 ): Promise<string> => {
   if (!isString(name) || name.length < 1) {
     throw new ValError('Incorrect or missing name');
@@ -298,7 +301,7 @@ const parseTaskNameForUpdate = async (
 
 const parseProjectId = async (
   projectId: string,
-  userId: string
+  userId: string,
 ): Promise<string> => {
   if (!(await isYourProject(projectId, userId))) {
     throw new ValError("can't add task to other usersnot your project");
@@ -309,7 +312,7 @@ const parseProjectId = async (
 
 const isYourProject = async (
   projectId: string,
-  userId: string
+  userId: string,
 ): Promise<boolean> => {
   const user = await User.findById(userId);
   if (user === null) {
@@ -321,7 +324,7 @@ const isYourProject = async (
 
 const isUniqueTaskName = async (
   taskName: string,
-  projectId: string
+  projectId: string,
 ): Promise<boolean> => {
   const tasksOfProject = await Project.findById(projectId).populate('tasks');
   if (tasksOfProject === null) {
@@ -330,7 +333,7 @@ const isUniqueTaskName = async (
   return tasksOfProject.toJSON().tasks.every((task) => {
     if (!('name' in task)) {
       throw new ValError(
-        'isUniqueTaskName error: `name` is not in task document'
+        'isUniqueTaskName error: `name` is not in task document',
       );
     }
     return task.name !== taskName;
@@ -340,7 +343,7 @@ const isUniqueTaskName = async (
 const isUniqueTaskNameForUpdate = async (
   taskName: string,
   projectId: string,
-  taskId: string
+  taskId: string,
 ): Promise<boolean> => {
   const tasksOfProject = await Project.findById(projectId).populate('tasks');
   const currentTask = await Task.findById(taskId);
@@ -356,7 +359,7 @@ const isUniqueTaskNameForUpdate = async (
     .tasks.filter((task) => {
       if (!('name' in task)) {
         throw new ValError(
-          'isUniqueTaskName error: `name` is not in task document'
+          'isUniqueTaskName error: `name` is not in task document',
         );
       }
       return task.name !== currentTask.name;
@@ -364,7 +367,7 @@ const isUniqueTaskNameForUpdate = async (
     .every((task) => {
       if (!('name' in task)) {
         throw new ValError(
-          'isUniqueTaskName error: `name` is not in task document'
+          'isUniqueTaskName error: `name` is not in task document',
         );
       }
       return task.name !== taskName;

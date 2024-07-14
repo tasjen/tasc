@@ -7,7 +7,7 @@ import { SECRET } from './config';
 export const userExtractor = (async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   let token = '';
 
@@ -32,11 +32,11 @@ export const logger = () => {
   morgan.token('data', (req: Request) => JSON.stringify(req.body));
   return process.env.NODE_ENV !== 'test'
     ? morgan(
-      ':method :url :status :res[content-length] - :response-time ms :data'
-    )
+        ':method :url :status :res[content-length] - :response-time ms :data',
+      )
     : (((_req, _res, next) => {
-      next();
-    }) as RequestHandler);
+        next();
+      }) as RequestHandler);
 };
 
 export const unknownEndpoint: RequestHandler = (_req, res) => {
@@ -47,7 +47,7 @@ export const errorHandler = (
   err: Error,
   _req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   switch (err.name) {
     case 'CastError':

@@ -33,15 +33,12 @@ const deleteProject = async (req: Request, res: Response): Promise<void> => {
 };
 
 const updateProject = async (req: Request, res: Response): Promise<void> => {
-  const { name, id } = await parseProjectForUpdate(
-    req.body,
-    req.user
-  );
+  const { name, id } = await parseProjectForUpdate(req.body, req.user);
 
   const updatedProject = await Project.findByIdAndUpdate(
     id,
     { name },
-    { new: true, runValidators: true, context: 'query' }
+    { new: true, runValidators: true, context: 'query' },
   ).select('name id');
 
   res.status(201).json(updatedProject);

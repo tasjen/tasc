@@ -7,21 +7,21 @@ const baseUrl = '/api/tasks';
 async function create(taskObject: Omit<TaskAPI, 'id'>): Promise<TaskAPI> {
   const res = await axios.post(baseUrl, taskObject, getAuthHeader(getToken()));
   return res.data;
-};
+}
 
 async function remove(taskId: string): Promise<string> {
   await axios.delete(`${baseUrl}/${taskId}`, getAuthHeader(getToken()));
-  return taskId
-};
+  return taskId;
+}
 
 async function update(taskObject: TaskAPI): Promise<TaskAPI> {
   const res = await axios.put(
     `${baseUrl}/${taskObject.id}`,
     taskObject,
-    getAuthHeader(getToken())
+    getAuthHeader(getToken()),
   );
   return res.data;
-};
+}
 
 export default {
   create,

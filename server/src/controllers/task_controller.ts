@@ -37,14 +37,14 @@ const deleteTask = async (req: Request, res: Response): Promise<void> => {
 const updateTask = async (req: Request, res: Response): Promise<void> => {
   const { id, ...parsedTask } = await parseTaskForUpdate(req.body, req.user);
   const toUpdate = Object.fromEntries(
-    Object.entries(parsedTask).filter(([_, value]) => value !== undefined)
+    Object.entries(parsedTask).filter(([_, value]) => value !== undefined),
   ); //remove all undefined fields returned from the parse function
 
-  const updatedTask = await Task.findByIdAndUpdate(
-    id,
-    toUpdate,
-    { new: true, runValidators: true, context: 'query' }
-  );
+  const updatedTask = await Task.findByIdAndUpdate(id, toUpdate, {
+    new: true,
+    runValidators: true,
+    context: 'query',
+  });
 
   res.status(201).json(updatedTask);
 };

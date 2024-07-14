@@ -16,20 +16,19 @@ import { parseUser } from '../utils/validator';
 // };
 
 const getUser = async (req: Request, res: Response): Promise<void> => {
-
-  const user = await User.findById(req.user).select('-_id').populate({
-    path: 'projects',
-    select: 'name',
-    populate: {
-      path: 'tasks',
-      select: ['name', 'description', 'due_date', 'priority'],
-    },
-  });
+  const user = await User.findById(req.user)
+    .select('-_id')
+    .populate({
+      path: 'projects',
+      select: 'name',
+      populate: {
+        path: 'tasks',
+        select: ['name', 'description', 'due_date', 'priority'],
+      },
+    });
 
   if (user === null) {
-    res
-      .status(401)
-      .json({ error: "user not found" });
+    res.status(401).json({ error: 'user not found' });
     return;
   }
   res.status(200).json(user);

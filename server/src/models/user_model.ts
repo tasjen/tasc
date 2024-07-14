@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Project',
-      required: true
+      required: true,
     },
   ],
 });
@@ -48,7 +48,7 @@ type Ret = {
   id?: string;
   _id?: mongoose.Types.ObjectId;
   __v?: number;
-  password?: string
+  password?: string;
 };
 
 userSchema.set('toJSON', {

@@ -8,10 +8,10 @@ async function getUserData(): Promise<TUserData> {
   const loggedUser = JSON.parse(localStorage.getItem('loggedUser')!);
   const res = await axios.get(
     `${baseUrl}/${loggedUser.username}`,
-    getAuthHeader(loggedUser.token)
+    getAuthHeader(loggedUser.token),
   );
   return res.data;
-};
+}
 
 async function register({
   username,
@@ -21,6 +21,6 @@ async function register({
   password: string;
 }): Promise<void> {
   await axios.post(baseUrl, { username, password });
-};
+}
 
 export default { getUserData, register };

@@ -28,7 +28,7 @@ const taskSchema = new mongoose.Schema({
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
-    required: true
+    required: true,
   },
 });
 
@@ -39,20 +39,23 @@ taskSchema.pre('save', async function (this, next) {
   if (this.isNew) {
     await Project.findOneAndUpdate(
       { _id: this.project },
-      { $push: { tasks: this._id } }
+      { $push: { tasks: this._id } },
     );
-  };
+  }
   next();
 });
 
-taskSchema.pre('deleteOne', { document: true, query: false }, async function (this, next) {
-  await Project.findOneAndUpdate(
-    { _id: this.project },
-    { $pull: { tasks: this._id } }
-  );
-  next();
-});
-
+taskSchema.pre(
+  'deleteOne',
+  { document: true, query: false },
+  async function (this, next) {
+    await Project.findOneAndUpdate(
+      { _id: this.project },
+      { $pull: { tasks: this._id } },
+    );
+    next();
+  },
+);
 
 type Ret = {
   id?: string;
