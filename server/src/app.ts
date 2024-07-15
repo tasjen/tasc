@@ -9,7 +9,7 @@ import testingRouter from './routes/testing_route';
 import { logger, unknownEndpoint, errorHandler } from './utils/middleware';
 import loginRouter from './routes/login_route';
 import projectRouter from './routes/project_route';
-import path from 'path';
+// import path from 'path';
 
 const app = express();
 
@@ -26,10 +26,10 @@ app.use(cors());
 app.use(express.json());
 app.use(logger());
 
-app.use(express.static(path.join(__dirname, 'dist')));
-app.get('/*', (_, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'));
-});
+// app.use(express.static(path.join(__dirname, 'dist')));
+// app.get('/*', (_, res) => {
+//   res.sendFile(path.join(__dirname, 'dist/index.html'));
+// });
 
 app.use('/api/users', userRouter);
 app.use('/api/projects', projectRouter);
