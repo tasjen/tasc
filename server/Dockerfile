@@ -9,4 +9,4 @@ WORKDIR /app
 ENV NODE_ENV=prod
 COPY --from=builder /app/build .
 COPY ./.env .
-CMD ["--enable-source-maps", "index.js"]
+CMD ["--enable-source-maps", "server.js"]
