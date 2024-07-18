@@ -1,7 +1,4 @@
-import dotenv from 'dotenv';
 import { isString } from './validator';
-
-dotenv.config();
 
 export const PORT = process.env.PORT || 3000;
 

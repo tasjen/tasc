@@ -1,0 +1,17 @@
+version: "3"
+
+tasks:
+  build:
+    cmds:
+      - echo "Building"
+      - |
+        cd server
+        pnpm run build
+        mv dist ../dist
+        rm -rf tsc_build
+        cd ../client
+        pnpm run build
+        mv dist ../dist/public
+  zip:
+    cmds:
+      - cd dist && zip -qr ../tasc-prod.zip .

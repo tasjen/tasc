@@ -1,0 +1,2 @@
+- Disable react query onvisible fetching
+- Do optimistic update
