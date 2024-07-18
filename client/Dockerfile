@@ -2,9 +2,11 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY ./client .
 COPY ./server /server
-RUN npm ci
+RUN corepack enable && \
+    corepack prepare pnpm@latest --activate
+RUN pnpm install --frozen-lockfile
 # ENV REACT_APP_BACKEND_URL=http://localhost:8080/api
-RUN npm run build
+RUN pnpm run build
 
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
