@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import projectController from '../controllers/project_controller';
-import { userExtractor } from '../utils/middleware';
+import { userExtractor } from '../controllers/middleware';
 
 const projectRouter = Router();
 

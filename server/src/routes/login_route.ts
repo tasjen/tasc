@@ -2,7 +2,7 @@ import { Router, RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/user_model';
-import { SECRET } from '../utils/config';
+import { SECRET } from '../config';
 import { isString } from '../utils/validator';
 
 const loginRouter = Router();

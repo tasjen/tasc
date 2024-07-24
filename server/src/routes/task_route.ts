@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import taskController from '../controllers/task_controller';
-import { userExtractor } from '../utils/middleware';
+import { userExtractor } from '../controllers/middleware';
 
 const taskRouter = Router();
 

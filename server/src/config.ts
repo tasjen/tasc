@@ -1,4 +1,4 @@
-import { isString } from './validator';
+import { isString } from './utils/validator';
 
 export const PORT = process.env.PORT || 3000;
 

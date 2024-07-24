@@ -1,2 +1,3 @@
+- Redesign database and data structure of state in the client
 - Disable react query onvisible fetching
 - Do optimistic update

@@ -1,6 +1,6 @@
 import express, { RequestHandler } from 'express';
 import userController from '../controllers/user_constoller';
-import { userExtractor } from '../utils/middleware';
+import { userExtractor } from '../controllers/middleware';
 
 const userRouter = express.Router();
 

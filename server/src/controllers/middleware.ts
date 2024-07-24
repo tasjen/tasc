@@ -2,7 +2,7 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import morgan from 'morgan';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from '../models/user_model';
-import { SECRET } from './config';
+import { SECRET } from '../config';
 
 export const userExtractor = (async (
   req: Request,
