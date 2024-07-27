@@ -4,6 +4,7 @@ dist-ssr
 *.local
 tsc_build
 .env
+*.zip
 
 # Logs
 logs
@@ -25,3 +26,8 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Terraform
+.terraform
+terraform.tfstate*
+secrets.tfvars
