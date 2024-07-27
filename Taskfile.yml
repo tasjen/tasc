@@ -1,9 +1,16 @@
 version: "3"
 
 tasks:
+  install:
+    cmds:
+      - echo "Installing dependencies"
+      - corepack enable && corepack prepare pnpm@latest --activate
+      - cd client && pnpm install
+      - cd server && pnpm install
+    silent: true
   build:
     cmds:
-      - echo "Building"
+      - echo "Creating a production build"
       - |
         cd server
         pnpm run build
@@ -12,6 +19,7 @@ tasks:
         cd ../client
         pnpm run build
         mv dist ../dist/public
+    silent: true
   zip:
     cmds:
       - cd dist && zip -qr ../tasc-prod.zip .
