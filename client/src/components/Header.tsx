@@ -7,7 +7,7 @@ export default function Header() {
 
   return (
     <header>
-      <p id="logo">Todo List</p>
+      <p id="logo">Tasc</p>
       <Notification />
       {userData && (
         <>
