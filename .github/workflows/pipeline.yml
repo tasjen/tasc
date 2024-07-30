@@ -8,28 +8,43 @@ on:
     branches: [main]
     types: [opened, synchronize]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  build:
+  build-and-deploy:
+    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip') }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - name: Install dependencies and Build
-        run: sh build.sh
-
-  deploy:
-    if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ', '), '#skip') }}
-    needs: build
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: Trigger deployment
-        run: curl ${{secrets.RENDER_DEPLOY_HOOK}}
-
+        run: |
+          echo "Installing dependencies"
+          corepack enable && corepack prepare pnpm@latest --activate
+          cd client && pnpm install --frozen-lockfile
+          cd ../server && pnpm install --frozen-lockfile
+          echo "Building"
+          pnpm run build
+          mv dist ../dist
+          cd ../client
+          pnpm run build
+          mv dist ../dist/public
+      - name: Zip the production build
+        run: |
+          cd dist
+          zip -qr ../tasc-prod.zip .
+      - name: deploy to Lambda
+        run: >
+          aws lambda update-function-code \
+            --function-name "tasc-lambda" \
+            --zip-file=fileb://tasc-prod.zip
   tag_release:
-    needs: deploy
+    needs: build-and-deploy
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
