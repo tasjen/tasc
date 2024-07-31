@@ -4,7 +4,14 @@
 
 [![preview](images/preview.png)](https://tasc.tasjen.pro)
 
-My first full stack project, **_Tasc_**, is a CRUD todo-list application. It is implemented using the MERN stack and TypeScript with a simple authentication feature.
+My first full stack project, **_Tasc_**, is a CRUD todo-list application. It is implemented using the MERN stack and TypeScript with a simple authentication feature. Styled in plain CSS.
+
+## Features
+
+- Clean UI with minimal style
+- Username/password authentication
+- Create/update/delete projects
+- Create/update/delete tasks
 
 ## Tech & Tools
 
