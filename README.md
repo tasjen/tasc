@@ -27,7 +27,7 @@ My first full stack project, **_[Tasc](https://tasc.tasjen.pro)_**, is a CRUD to
 - [JWT](https://jwt.io/) - A modern secure method for authentication
 - [Cypress](https://www.cypress.io/) - A testing library for Node.js
 - [MongoDB](https://www.mongodb.com/) - A NoSQL database system
-- [Mongoose](https://mongoosejs.com/) - An MongoDB ODM for Node.js
+- [Mongoose](https://mongoosejs.com/) - A MongoDB ODM for Node.js
 - [GitHub Actions](https://github.com/features/actions) - A CI/CD platform from GitHub
 - [Terraform](https://www.terraform.io/) - A tool for provisioning cloud infrastructure
 
